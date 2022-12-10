@@ -5,7 +5,9 @@ import com.peaksoft.project_on_restapi.converter.response.CompanyResponseConvert
 import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.model.entity.Company;
+import com.peaksoft.project_on_restapi.model.entity.Course;
 import com.peaksoft.project_on_restapi.repository.CompanyRepository;
+import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,21 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyResponseConverter companyResponseConverter;
 
+    private final CourseRepository courseRepository;
 
     @Override
     public CompanyResponse saveCompany(CompanyRequest companyRequest) {
         Company company = companyRequestConverter.saveCompany(companyRequest);
+        System.out.println("save 1 ");
+        for (Course course : company.getCourses()) {
+            System.out.println("save 2");
+            course.setCompany(company);
+            System.out.println("save 3");
+            courseRepository.save(course);
+            System.out.println("save 4");
+        }
         companyRepository.save(company);
+        System.out.println("save 5");
         return companyResponseConverter.viewCompany(company);
     }
 

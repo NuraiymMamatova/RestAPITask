@@ -24,9 +24,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseResponse saveCourse(CourseRequest courseRequest) {
-        Course course = courseRequestConverter.saveCourse(courseRequest);
-        courseRepository.save(course);
-        return courseResponseConverter.viewCourse(course);
+//        Course course = courseRequestConverter.saveCourse(courseRequest);
+//        courseRepository.save(course);
+//        return courseResponseConverter.viewCourse(course);
+        return null;
     }
 
     @Override

@@ -21,11 +21,21 @@ public class InstructorRequestConverter {
     }
 
     public void update(Instructor instructor , InstructorRequest instructorRequest) {
-        instructor.setFirstName(instructorRequest.getFirstName());
-        instructor.setLastName(instructorRequest.getLastName());
-        instructor.setPhoneNumber(instructorRequest.getPhoneNumber());
-        instructor.setEmail(instructorRequest.getEmail());
-        instructor.setSpecialization(instructorRequest.getSpecialization());
+        if (instructorRequest.getFirstName() != null) {
+            instructor.setFirstName(instructorRequest.getFirstName());
+        }
+        if (instructorRequest.getLastName() != null) {
+            instructor.setLastName(instructorRequest.getLastName());
+        }
+        if (instructorRequest.getPhoneNumber() != null) {
+            instructor.setPhoneNumber(instructorRequest.getPhoneNumber());
+        }
+        if (instructorRequest.getEmail() != null) {
+            instructor.setEmail(instructorRequest.getEmail());
+        }
+        if (instructorRequest.getSpecialization() != null) {
+            instructor.setSpecialization(instructorRequest.getSpecialization());
+        }
 
     }
 }
