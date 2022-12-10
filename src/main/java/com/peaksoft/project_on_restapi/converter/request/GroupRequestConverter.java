@@ -22,7 +22,12 @@ public class GroupRequestConverter {
     }
 
     public void update(Group group, GroupRequest groupRequest) {
-        group.setGroupName(groupRequest.getGroupName());
-        group.setImage(groupRequest.getImage());
+        if (groupRequest.getGroupName() != null) {
+            group.setGroupName(groupRequest.getGroupName());
+        }
+        if (groupRequest.getImage() != null) {
+            group.setImage(groupRequest.getImage());
+        }
+
     }
 }

@@ -19,9 +19,15 @@ public class TaskRequestConverter {
     }
 
     public void update(Task task, TaskRequest taskRequest) {
-        task.setTaskName(taskRequest.getTaskName());
-        task.setTaskText(taskRequest.getTaskText());
-        task.setDeadline(taskRequest.getDeadline());
+        if (taskRequest.getTaskName() != null) {
+            task.setTaskName(taskRequest.getTaskName());
+        }
+        if (taskRequest.getTaskText() != null) {
+            task.setTaskText(taskRequest.getTaskText());
+        }
+        if (taskRequest.getDeadline() != null) {
+            task.setDeadline(taskRequest.getDeadline());
+        }
 
     }
 }

@@ -21,11 +21,22 @@ public class StudentRequestConverter {
     }
 
     public void update(Student student, StudentRequest studentRequest) {
-        student.setFirstName(studentRequest.getFirstName());
-        student.setLastName(studentRequest.getLastName());
-        student.setPhoneNumber(studentRequest.getPhoneNumber());
-        student.setEmail(studentRequest.getEmail());
-        student.setStudyFormat(studentRequest.getStudyFormat());
+        if (studentRequest.getFirstName() != null) {
+            student.setFirstName(studentRequest.getFirstName());
+        }
+        if (studentRequest.getLastName() != null) {
+            student.setLastName(studentRequest.getLastName());
+        }
+        if (studentRequest.getPhoneNumber() != null) {
+            student.setPhoneNumber(studentRequest.getPhoneNumber());
+        }
+        if (studentRequest.getEmail() != null) {
+            student.setEmail(studentRequest.getEmail());
+        }
+        if (studentRequest.getStudyFormat() != null) {
+            student.setStudyFormat(studentRequest.getStudyFormat());
+        }
+
 
     }
 }

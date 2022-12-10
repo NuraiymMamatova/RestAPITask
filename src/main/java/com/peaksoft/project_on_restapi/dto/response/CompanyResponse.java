@@ -20,6 +20,6 @@ public class CompanyResponse {
 
     private String locatedCountry;
 
-//    private List<Course> courses;
+    private List<Course> courses;
 
 }

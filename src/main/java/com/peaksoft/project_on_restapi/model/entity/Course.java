@@ -1,5 +1,7 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +34,7 @@ public class Course {
     private String description;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = LAZY)
+    @JsonBackReference
     private Company company;
 
     @OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "course")
