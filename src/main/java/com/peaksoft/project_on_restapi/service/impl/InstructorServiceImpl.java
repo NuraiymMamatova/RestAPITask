@@ -4,7 +4,11 @@ import com.peaksoft.project_on_restapi.converter.request.InstructorRequestConver
 import com.peaksoft.project_on_restapi.converter.response.InstructorResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.InstructorRequest;
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
+import com.peaksoft.project_on_restapi.model.entity.Course;
+import com.peaksoft.project_on_restapi.model.entity.Group;
 import com.peaksoft.project_on_restapi.model.entity.Instructor;
+import com.peaksoft.project_on_restapi.model.entity.Student;
+import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.repository.InstructorRepository;
 import com.peaksoft.project_on_restapi.service.InstructorService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,8 @@ public class InstructorServiceImpl implements InstructorService {
 
     private final InstructorRepository instructorRepository;
 
+    private final CourseRepository courseRepository;
+
     private final InstructorRequestConverter instructorRequestConverter;
 
     private final InstructorResponseConverter instructorResponseConverter;
@@ -26,6 +32,16 @@ public class InstructorServiceImpl implements InstructorService {
     @Override
     public InstructorResponse saveInstructor(InstructorRequest instructorRequest) {
         Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
+        instructorRepository.save(instructor);
+        return instructorResponseConverter.viewInstructor(instructor);
+    }
+
+    @Override
+    public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) {
+        Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
+        Course course = courseRepository.findById(courseId).get();
+        course.addInstructor(instructor);
+        instructor.setCourse(course);
         instructorRepository.save(instructor);
         return instructorResponseConverter.viewInstructor(instructor);
     }
@@ -61,7 +77,28 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException {
-
+    public void assignInstructorToCourse(Long instructorId, Long courseId) {
+        if (instructorId != null) {
+            Instructor instructor = instructorRepository.findById(instructorId).get();
+            if (courseId != null) {
+                Course course = courseRepository.findById(courseId).get();
+                //
+                Long count = 0L;
+                for (Group group : course.getGroups()) {
+                    for (Student student : group.getStudents()) {
+                        count ++;
+                    }
+                }
+                instructor.setCount(count);
+                //
+                instructor.setCourse(course);
+                course.addInstructor(instructor);
+                instructorRepository.save(instructor);
+            }else {
+                System.out.println("course is null");
+            }
+        }else {
+            System.out.println("instructor is null");
+        }
     }
 }

@@ -20,6 +20,11 @@ public class LessonApi {
         return lessonService.saveLesson(lessonRequest);
     }
 
+    @PostMapping("/save/{courseId}")
+    public LessonResponse saveLesson(@PathVariable Long courseId, @RequestBody LessonRequest lessonRequest) {
+        return lessonService.saveLesson(courseId, lessonRequest);
+    }
+
     @GetMapping("/all")
     public List<LessonResponse> findAllLessons() {
         return lessonService.viewAllLessons();

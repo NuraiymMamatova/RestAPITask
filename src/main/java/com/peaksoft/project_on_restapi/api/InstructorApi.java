@@ -22,6 +22,11 @@ public class InstructorApi {
         return instructorService.saveInstructor(instructorRequest);
     }
 
+    @PostMapping("/save/{courseId}")
+    public InstructorResponse saveInstructor(@PathVariable Long courseId, @RequestBody InstructorRequest instructorRequest) {
+        return instructorService.saveInstructor(courseId, instructorRequest);
+    }
+
     @GetMapping("/all")
     public List<InstructorResponse> findAllInstructors() {
         return instructorService.viewAllInstructors();
@@ -44,5 +49,12 @@ public class InstructorApi {
         
     }
 
+    @PostMapping("/{instructorId}/assignInstructorToCourse/{courseId}")
+    private InstructorResponse assignInstructorToCourse(@PathVariable Long instructorId,
+                                                        @PathVariable Long courseId) {
+        instructorService.assignInstructorToCourse(instructorId, courseId);
+        return instructorService.findInstructorById(instructorId);
+
+    }
 
 }

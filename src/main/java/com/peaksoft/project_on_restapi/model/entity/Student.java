@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.peaksoft.project_on_restapi.model.enums.StudyFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ public class Student {
     private StudyFormat studyFormat;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Group group;
 
     public Student(String firstName, String lastName, String phoneNumber, String email, StudyFormat studyFormat) {

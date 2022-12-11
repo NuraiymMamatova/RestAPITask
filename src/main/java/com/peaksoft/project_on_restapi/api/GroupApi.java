@@ -20,6 +20,11 @@ public class GroupApi {
         return groupService.saveGroup(groupRequest);
     }
 
+    @PostMapping("/save/{courseId}")
+    public GroupResponse saveGroup(@PathVariable Long courseId, @RequestBody GroupRequest groupRequest) {
+        return groupService.saveGroup(courseId, groupRequest);
+    }
+
     @GetMapping("/all")
     public List<GroupResponse> findAllGroups() {
         return groupService.viewAllGroups();

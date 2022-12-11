@@ -11,6 +11,8 @@ public interface StudentService {
 
     StudentResponse saveStudent(StudentRequest studentRequest);
 
+    StudentResponse saveStudent(Long groupId, StudentRequest studentRequest);
+
     StudentResponse deleteStudentById(Long studentId);
 
     StudentResponse updateStudent(Long studentId, StudentRequest studentRequest);
@@ -21,6 +23,6 @@ public interface StudentService {
 
     List<Student> getAllStudents(Long id);
 
-    void assignStudentToGroup(Long studentId, Long groupId) throws IOException;
+    void assignStudentToGroup(Long studentId, Long groupId);
 
 }

@@ -2,13 +2,13 @@ package com.peaksoft.project_on_restapi.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
-        import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-        import jakarta.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
-        import java.util.List;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class Company {
 
     @Id
-    @SequenceGenerator(name = "company_seq",sequenceName = "company_seq",allocationSize = 1)
+    @SequenceGenerator(name = "company_seq", sequenceName = "company_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_seq")
     private Long id;
 
@@ -48,17 +48,17 @@ public class Company {
 
     }
 
-    public void plusStudent(Course course1){
+    public void plusStudent(Course course1) {
         for (Group group : course1.getGroups()) {
-            for (Student student: group.getStudents()) {
+            for (Student student : group.getStudents()) {
                 count++;
             }
         }
     }
 
-    public void minusStudent(Course course1){
+    public void minusStudent(Course course1) {
         for (Group group : course1.getGroups()) {
-            for (Student student: group.getStudents()) {
+            for (Student student : group.getStudents()) {
                 count--;
             }
         }

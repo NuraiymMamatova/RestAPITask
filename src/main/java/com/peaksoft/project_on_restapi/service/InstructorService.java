@@ -11,6 +11,8 @@ public interface InstructorService {
 
     InstructorResponse saveInstructor(InstructorRequest instructorRequest);
 
+    InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest);
+
     InstructorResponse deleteInstructorById(Long instructorId);
 
     InstructorResponse updateInstructor(Long instructorId, InstructorRequest instructorRequest);
@@ -21,6 +23,6 @@ public interface InstructorService {
 
     List<Instructor> getAllInstructors(Long id);
 
-    void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException;
+    void assignInstructorToCourse(Long instructorId, Long courseId);
 
 }

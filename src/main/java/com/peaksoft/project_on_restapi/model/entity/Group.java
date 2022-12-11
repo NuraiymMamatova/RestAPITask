@@ -1,5 +1,9 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +39,11 @@ public class Group {
     @JoinTable(name = "groups_courses",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@UUID")
     private List<Course> courses;
 
     @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "group")
+    @JsonManagedReference
     private List<Student> students;
 
     public Group(String groupName, Date dateOfStart, String image) {

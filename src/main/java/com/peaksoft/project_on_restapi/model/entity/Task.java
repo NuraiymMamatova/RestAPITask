@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class Task {
     private LocalDate deadline;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Lesson lesson;
 
     public Task(String taskName, String taskText, LocalDate deadline) {

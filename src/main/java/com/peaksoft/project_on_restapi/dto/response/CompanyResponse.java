@@ -20,6 +20,10 @@ public class CompanyResponse {
 
     private String locatedCountry;
 
+    //
+    private Long count;
+    //
+
     private List<Course> courses;
 
 }

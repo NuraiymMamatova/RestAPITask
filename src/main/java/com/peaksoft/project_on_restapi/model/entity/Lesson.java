@@ -1,6 +1,8 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,9 +30,11 @@ public class Lesson {
     private String lessonName;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Course course;
 
     @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "lesson")
+    @JsonManagedReference
     private List<Task> tasks;
 
     public Lesson(String lessonName) {

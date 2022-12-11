@@ -10,6 +10,8 @@ public interface CourseService {
 
     CourseResponse saveCourse(CourseRequest courseRequest);
 
+    CourseResponse saveCourse(Long companyId, CourseRequest courseRequest);
+
     CourseResponse deleteCourseById(Long courseId);
 
     CourseResponse updateCourse(Long courseId, CourseRequest courseRequest);

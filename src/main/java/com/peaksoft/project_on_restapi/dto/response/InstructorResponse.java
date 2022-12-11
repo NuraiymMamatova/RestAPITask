@@ -22,4 +22,9 @@ public class InstructorResponse {
     private String email;
 
     private String specialization;
+
+    //
+    private Long count;
+    //
+
 }

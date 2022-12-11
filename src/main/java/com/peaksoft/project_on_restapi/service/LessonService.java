@@ -10,6 +10,8 @@ public interface LessonService {
 
    LessonResponse saveLesson(LessonRequest lessonRequest);
 
+   LessonResponse saveLesson(Long  courseId, LessonRequest lessonRequest);
+
    LessonResponse deleteLessonById(Long lessonId);
 
    LessonResponse updateLesson(Long lessonId, LessonRequest lessonRequest);

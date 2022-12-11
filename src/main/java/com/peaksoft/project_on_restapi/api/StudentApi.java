@@ -20,6 +20,11 @@ public class StudentApi {
         return studentService.saveStudent(studentRequest);
     }
 
+    @PostMapping("/save/{groupId}")
+    public StudentResponse saveStudent(@PathVariable Long groupId, @RequestBody StudentRequest studentRequest) {
+        return studentService.saveStudent(groupId, studentRequest);
+    }
+
     @GetMapping("/all")
     public List<StudentResponse> findAllStudents() {
         return studentService.viewAllStudents();
@@ -39,5 +44,11 @@ public class StudentApi {
     public StudentResponse updateStudent(@PathVariable Long studentId,
                                          @RequestBody StudentRequest studentRequest) {
         return studentService.updateStudent(studentId, studentRequest);
+    }
+
+    @PostMapping("/{studentId}/assignStudentToGroup/{groupId}")
+    private StudentResponse assignStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) {
+        studentService.assignStudentToGroup(studentId, groupId);
+        return studentService.findStudentById(studentId);
     }
 }

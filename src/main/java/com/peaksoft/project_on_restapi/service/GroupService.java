@@ -11,6 +11,8 @@ public interface GroupService {
 
     GroupResponse saveGroup(GroupRequest groupRequest);
 
+    GroupResponse saveGroup(Long courseId, GroupRequest groupRequest);
+
     GroupResponse deleteGroupById(Long groupId);
 
     GroupResponse updateGroup(Long groupId, GroupRequest groupRequest);
@@ -19,6 +21,6 @@ public interface GroupService {
 
     List<GroupResponse> viewAllGroups();
 
-    void assignGroupToCourse(Long groupId, Long courseId) throws IOException;
+    void assignGroupToCourse(Long groupId, Long courseId);
 
 }
