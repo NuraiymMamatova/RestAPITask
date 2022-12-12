@@ -29,14 +29,6 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentResponseConverter studentResponseConverter;
 
-
-    @Override
-    public StudentResponse saveStudent(StudentRequest studentRequest) {
-        Student student = studentRequestConverter.saveStudent(studentRequest);
-        studentRepository.save(student);
-        return studentResponseConverter.viewStudent(student);
-    }
-
     @Override
     public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) {
         Student student = studentRequestConverter.saveStudent(studentRequest);

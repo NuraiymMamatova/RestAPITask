@@ -17,11 +17,6 @@ public class InstructorApi {
 
     private final InstructorService instructorService;
 
-    @PostMapping("/save")
-    public InstructorResponse saveInstructor(@RequestBody InstructorRequest instructorRequest) {
-        return instructorService.saveInstructor(instructorRequest);
-    }
-
     @PostMapping("/save/{courseId}")
     public InstructorResponse saveInstructor(@PathVariable Long courseId, @RequestBody InstructorRequest instructorRequest) {
         return instructorService.saveInstructor(courseId, instructorRequest);

@@ -30,13 +30,6 @@ public class TaskServiceImpl implements TaskService {
     private final TaskResponseConverter taskResponseConverter;
 
     @Override
-    public TaskResponse saveTask(TaskRequest taskRequest) {
-        Task task = taskRequestConverter.saveTask(taskRequest);
-        taskRepository.save(task);
-        return taskResponseConverter.viewTask(task);
-    }
-
-    @Override
     public TaskResponse saveTask(Long lessonId, TaskRequest taskRequest) {
         Task task = taskRequestConverter.saveTask(taskRequest);
         Lesson lesson = lessonRepository.findById(lessonId).get();

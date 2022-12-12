@@ -15,11 +15,6 @@ public class StudentApi {
 
     private final StudentService studentService;
 
-    @PostMapping("/save")
-    public StudentResponse saveStudent(@RequestBody StudentRequest studentRequest) {
-        return studentService.saveStudent(studentRequest);
-    }
-
     @PostMapping("/save/{groupId}")
     public StudentResponse saveStudent(@PathVariable Long groupId, @RequestBody StudentRequest studentRequest) {
         return studentService.saveStudent(groupId, studentRequest);

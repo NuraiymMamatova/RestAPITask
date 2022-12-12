@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface InstructorService {
 
-    InstructorResponse saveInstructor(InstructorRequest instructorRequest);
-
     InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest);
 
     InstructorResponse deleteInstructorById(Long instructorId);

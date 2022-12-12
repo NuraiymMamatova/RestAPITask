@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface StudentService {
 
-    StudentResponse saveStudent(StudentRequest studentRequest);
-
     StudentResponse saveStudent(Long groupId, StudentRequest studentRequest);
 
     StudentResponse deleteStudentById(Long studentId);

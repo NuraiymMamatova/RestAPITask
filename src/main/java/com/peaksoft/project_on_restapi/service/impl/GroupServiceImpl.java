@@ -32,13 +32,6 @@ public class GroupServiceImpl implements GroupService {
     private final GroupResponseConverter groupResponseConverter;
 
     @Override
-    public GroupResponse saveGroup(GroupRequest groupRequest) {
-        Group group = groupRequestConverter.saveGroup(groupRequest);
-        groupRepository.save(group);
-        return groupResponseConverter.viewGroup(group);
-    }
-
-    @Override
     public GroupResponse saveGroup(Long courseId, GroupRequest groupRequest) {
         Course course = courseRepository.findById(courseId).get();
         Group group = groupRequestConverter.saveGroup(groupRequest);

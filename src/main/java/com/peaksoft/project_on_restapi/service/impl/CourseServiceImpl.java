@@ -29,13 +29,6 @@ public class CourseServiceImpl implements CourseService {
     private final CourseResponseConverter courseResponseConverter;
 
     @Override
-    public CourseResponse saveCourse(CourseRequest courseRequest) {
-        Course course = courseRequestConverter.saveCourse(courseRequest);
-        courseRepository.save(course);
-        return courseResponseConverter.viewCourse(course);
-    }
-
-    @Override
     public CourseResponse saveCourse(Long companyId, CourseRequest courseRequest) {
         Course course = courseRequestConverter.saveCourse(courseRequest);
         Company company = companyRepository.findById(companyId).get();

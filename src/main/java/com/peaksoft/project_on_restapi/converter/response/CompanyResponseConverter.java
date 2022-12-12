@@ -3,7 +3,6 @@ package com.peaksoft.project_on_restapi.converter.response;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.model.entity.Company;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class CompanyResponseConverter {
         companyResponse.setCompanyName(company.getCompanyName());
         companyResponse.setLocatedCountry(company.getLocatedCountry());
         companyResponse.setCount(company.getCount());
-        companyResponse.setCourses(company.getCourses());
         return companyResponse;
     }
 

@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface TaskService {
 
-    TaskResponse saveTask(TaskRequest taskRequest);
-
     TaskResponse saveTask(Long lessonId, TaskRequest taskRequest);
 
     TaskResponse deleteTaskById(Long taskId);

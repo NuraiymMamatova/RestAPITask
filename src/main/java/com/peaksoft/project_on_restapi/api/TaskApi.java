@@ -15,11 +15,6 @@ public class TaskApi {
 
     private final TaskService taskService;
 
-    @PostMapping("/save")
-    public TaskResponse saveTask(@RequestBody TaskRequest taskRequest) {
-        return taskService.saveTask(taskRequest);
-    }
-
     @PostMapping("/save/{lessonId}")
     public TaskResponse saveTask(@PathVariable Long lessonId, @RequestBody TaskRequest taskRequest) {
         return taskService.saveTask(lessonId, taskRequest);

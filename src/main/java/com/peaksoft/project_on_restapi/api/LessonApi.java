@@ -15,11 +15,6 @@ public class LessonApi {
 
     private final LessonService lessonService;
 
-    @PostMapping("/save")
-    public LessonResponse saveLesson(@RequestBody LessonRequest lessonRequest) {
-        return lessonService.saveLesson(lessonRequest);
-    }
-
     @PostMapping("/save/{courseId}")
     public LessonResponse saveLesson(@PathVariable Long courseId, @RequestBody LessonRequest lessonRequest) {
         return lessonService.saveLesson(courseId, lessonRequest);

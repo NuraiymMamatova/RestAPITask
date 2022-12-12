@@ -14,7 +14,6 @@ import com.peaksoft.project_on_restapi.service.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -30,16 +29,19 @@ public class InstructorServiceImpl implements InstructorService {
     private final InstructorResponseConverter instructorResponseConverter;
 
     @Override
-    public InstructorResponse saveInstructor(InstructorRequest instructorRequest) {
-        Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
-        instructorRepository.save(instructor);
-        return instructorResponseConverter.viewInstructor(instructor);
-    }
-
-    @Override
     public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) {
         Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
         Course course = courseRepository.findById(courseId).get();
+        //
+        Long count = 0L;
+        for (Group group : course.getGroups()) {
+            for (Student student : group.getStudents()) {
+                  count++;
+
+            }
+        }
+        instructor.setCount(count);
+        //
         course.addInstructor(instructor);
         instructor.setCourse(course);
         instructorRepository.save(instructor);

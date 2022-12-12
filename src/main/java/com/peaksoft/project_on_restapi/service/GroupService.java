@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface GroupService {
 
-    GroupResponse saveGroup(GroupRequest groupRequest);
-
     GroupResponse saveGroup(Long courseId, GroupRequest groupRequest);
 
     GroupResponse deleteGroupById(Long groupId);

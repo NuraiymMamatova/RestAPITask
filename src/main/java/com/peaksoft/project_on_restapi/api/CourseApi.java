@@ -18,11 +18,6 @@ public class CourseApi {
 
     private final GroupService groupService;
 
-    @PostMapping("/save")
-    public CourseResponse saveCourse(@RequestBody CourseRequest courseRequest) {
-        return courseService.saveCourse(courseRequest);
-    }
-
     @PostMapping("/save/{companyId}")
     public CourseResponse saveCourse(@PathVariable Long companyId, @RequestBody CourseRequest courseRequest) {
         return courseService.saveCourse(companyId, courseRequest);

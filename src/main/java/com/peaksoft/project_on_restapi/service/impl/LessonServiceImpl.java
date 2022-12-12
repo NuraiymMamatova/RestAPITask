@@ -27,13 +27,6 @@ public class LessonServiceImpl implements LessonService {
     private final LessonResponseConverter lessonResponseConverter;
 
     @Override
-    public LessonResponse saveLesson(LessonRequest lessonRequest) {
-        Lesson lesson = lessonRequestConverter.saveLesson(lessonRequest);
-        lessonRepository.save(lesson);
-        return lessonResponseConverter.viewLesson(lesson);
-    }
-
-    @Override
     public LessonResponse saveLesson(Long courseId, LessonRequest lessonRequest) {
         Lesson lesson = lessonRequestConverter.saveLesson(lessonRequest);
         Course course = courseRepository.findById(courseId).get();

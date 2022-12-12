@@ -15,11 +15,6 @@ public class GroupApi {
 
     private final GroupService groupService;
 
-    @PostMapping("/save")
-    public GroupResponse saveGroup(@RequestBody GroupRequest groupRequest) {
-        return groupService.saveGroup(groupRequest);
-    }
-
     @PostMapping("/save/{courseId}")
     public GroupResponse saveGroup(@PathVariable Long courseId, @RequestBody GroupRequest groupRequest) {
         return groupService.saveGroup(courseId, groupRequest);

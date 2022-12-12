@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface CourseService {
 
-    CourseResponse saveCourse(CourseRequest courseRequest);
-
     CourseResponse saveCourse(Long companyId, CourseRequest courseRequest);
 
     CourseResponse deleteCourseById(Long courseId);
