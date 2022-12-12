@@ -27,6 +27,11 @@ public class InstructorApi {
         return instructorService.viewAllInstructors();
     }
 
+    @GetMapping("/all/{courseId}")
+    public List<InstructorResponse> findAllInstructors(@PathVariable Long courseId) {
+        return instructorService.viewAllInstructors(courseId);
+    }
+
     @GetMapping("/{instructorId}")
     public InstructorResponse findById(@PathVariable Long instructorId) {
         return instructorService.findInstructorById(instructorId);

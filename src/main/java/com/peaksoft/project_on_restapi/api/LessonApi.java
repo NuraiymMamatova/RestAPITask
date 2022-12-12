@@ -25,6 +25,11 @@ public class LessonApi {
         return lessonService.viewAllLessons();
     }
 
+    @GetMapping("/all/{courseId}")
+    public List<LessonResponse> findAllLessons(@PathVariable Long courseId) {
+        return lessonService.viewAllLessons(courseId);
+    }
+
     @GetMapping("/{lessonId}")
     public LessonResponse findById(@PathVariable Long lessonId) {
         return lessonService.findLessonById(lessonId);

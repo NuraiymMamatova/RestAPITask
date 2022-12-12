@@ -25,6 +25,11 @@ public class TaskApi {
         return taskService.viewAllTasks();
     }
 
+    @GetMapping("/all/{lessonId}")
+    public List<TaskResponse> findAllTasks(@PathVariable Long lessonId) {
+        return taskService.viewAllTasks(lessonId);
+    }
+
     @GetMapping("/{taskId}")
     public TaskResponse findById(@PathVariable Long taskId) {
         return taskService.findTaskById(taskId);

@@ -18,5 +18,5 @@ public interface LessonService {
 
    List<LessonResponse> viewAllLessons();
 
-    List<Lesson> getAllLessons(Long id);
+    List<LessonResponse> viewAllLessons(Long courseId);
 }

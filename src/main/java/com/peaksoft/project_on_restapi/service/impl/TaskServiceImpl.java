@@ -65,7 +65,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks(Long id) {
-        return null;
+    public List<TaskResponse> viewAllTasks(Long lessonId) {
+        return taskResponseConverter.viewAllTask(taskRepository.getAllTasksById(lessonId));
     }
+
 }

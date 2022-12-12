@@ -18,5 +18,5 @@ public interface TaskService {
 
     List<TaskResponse> viewAllTasks();
 
-    List<Task> getAllTasks(Long id);
+    List<TaskResponse> viewAllTasks(Long lessonId);
 }

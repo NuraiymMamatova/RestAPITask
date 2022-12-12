@@ -25,6 +25,11 @@ public class StudentApi {
         return studentService.viewAllStudents();
     }
 
+    @GetMapping("/all/{groupId}")
+    public List<StudentResponse> findAllStudents(@PathVariable Long groupId) {
+        return studentService.viewAllStudents(groupId);
+    }
+
     @GetMapping("/{studentId}")
     public StudentResponse findById(@PathVariable Long studentId) {
         return studentService.findStudentById(studentId);

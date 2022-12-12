@@ -73,4 +73,9 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseResponse> viewAllCourses() {
         return courseResponseConverter.viewAllCourse(courseRepository.findAll());
     }
+
+    @Override
+    public List<CourseResponse> viewAllCourses(Long companyId) {
+        return courseResponseConverter.viewAllCourse(courseRepository.getAllCoursesByCompanyId(companyId));
+    }
 }

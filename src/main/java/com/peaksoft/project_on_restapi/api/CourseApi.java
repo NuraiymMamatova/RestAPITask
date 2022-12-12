@@ -28,6 +28,11 @@ public class CourseApi {
         return courseService.viewAllCourses();
     }
 
+    @GetMapping("/all/{companyId}")
+    public List<CourseResponse> findALlCourses(@PathVariable Long companyId) {
+        return courseService.viewAllCourses(companyId);
+    }
+
     @GetMapping("/{courseId}")
     public CourseResponse findById(@PathVariable Long courseId) {
         return courseService.findCourseById(courseId);

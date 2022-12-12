@@ -62,7 +62,8 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> getAllLessons(Long id) {
-        return null;
+    public List<LessonResponse> viewAllLessons(Long courseId) {
+        return lessonResponseConverter.viewAllLesson(lessonRepository.getLessonsByCourseId(courseId));
     }
+
 }

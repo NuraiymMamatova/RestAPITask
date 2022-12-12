@@ -19,7 +19,7 @@ public interface InstructorService {
 
     List<InstructorResponse> viewAllInstructors();
 
-    List<Instructor> getAllInstructors(Long id);
+    List<InstructorResponse> viewAllInstructors(Long courseId);
 
     void assignInstructorToCourse(Long instructorId, Long courseId);
 

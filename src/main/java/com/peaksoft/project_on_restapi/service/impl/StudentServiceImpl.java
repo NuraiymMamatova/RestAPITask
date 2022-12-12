@@ -85,8 +85,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getAllStudents(Long id) {
-        return null;
+    public List<StudentResponse> viewAllStudents(Long groupId) {
+        return studentResponseConverter.viewAllStudent(studentRepository.getAllStudentsByGroupId(groupId));
     }
 
     @Override

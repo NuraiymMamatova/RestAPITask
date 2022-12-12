@@ -17,4 +17,6 @@ public interface CourseService {
     CourseResponse findCourseById(Long courseId);
 
     List<CourseResponse> viewAllCourses();
+
+    List<CourseResponse> viewAllCourses(Long companyId);
 }

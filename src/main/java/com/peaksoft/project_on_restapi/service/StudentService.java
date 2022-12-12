@@ -19,7 +19,7 @@ public interface StudentService {
 
     List<StudentResponse> viewAllStudents();
 
-    List<Student> getAllStudents(Long id);
+    List<StudentResponse> viewAllStudents(Long studentId);
 
     void assignStudentToGroup(Long studentId, Long groupId);
 
