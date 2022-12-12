@@ -30,9 +30,12 @@ public class StudentServiceImpl implements StudentService {
     private final StudentResponseConverter studentResponseConverter;
 
     @Override
-    public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) {
+    public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) throws IOException {
         Student student = studentRequestConverter.saveStudent(studentRequest);
         Group group = groupRepository.findById(groupId).get();
+        validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
+                .replace(" ", ""), student.getFirstName()
+                .replace(" ", ""));
         //
         for (Course course : group.getCourses()) {
             course.getCompany().plus();
@@ -67,8 +70,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentResponse updateStudent(Long studentId, StudentRequest studentRequest) {
+    public StudentResponse updateStudent(Long studentId, StudentRequest studentRequest) throws IOException {
         Student student = studentRepository.findById(studentId).get();
+        validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
+                .replace(" ", ""), student.getFirstName()
+                .replace(" ", ""));
         studentRequestConverter.update(student, studentRequest);
         return studentResponseConverter.viewStudent(studentRepository.save(student));
     }
@@ -100,6 +106,43 @@ public class StudentServiceImpl implements StudentService {
                 groupRepository.save(group);
                 studentRepository.save(student);
             }
+        }
+    }
+
+    private void validator(String phoneNumber, String firstName, String lastName) throws IOException {
+        if (firstName.length() > 2 && lastName.length() > 2) {
+            for (Character i : firstName.toCharArray()) {
+                if (!Character.isAlphabetic(i)) {
+                    throw new IOException("В имени студента нельзя вставлять цифры");
+                }
+            }
+
+            for (Character i : lastName.toCharArray()) {
+                if (!Character.isAlphabetic(i)) {
+                    throw new IOException("В фамилию студента нельзя вставлять цифры");
+                }
+            }
+        } else {
+            throw new IOException("В имени или фамилии студента должно быть как минимум 3 буквы");
+        }
+
+        if (phoneNumber.length() == 13
+                && phoneNumber.charAt(0) == '+'
+                && phoneNumber.charAt(1) == '9'
+                && phoneNumber.charAt(2) == '9'
+                && phoneNumber.charAt(3) == '6') {
+            int counter = 0;
+
+            for (Character i : phoneNumber.toCharArray()) {
+                if (counter != 0) {
+                    if (!Character.isDigit(i)) {
+                        throw new IOException("Формат номера не правильный");
+                    }
+                }
+                counter++;
+            }
+        } else {
+            throw new IOException("Формат номера не правильный");
         }
     }
 }

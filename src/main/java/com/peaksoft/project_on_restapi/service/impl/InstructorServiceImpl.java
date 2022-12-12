@@ -14,6 +14,7 @@ import com.peaksoft.project_on_restapi.service.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -29,9 +30,12 @@ public class InstructorServiceImpl implements InstructorService {
     private final InstructorResponseConverter instructorResponseConverter;
 
     @Override
-    public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) {
+    public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) throws IOException {
         Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
         Course course = courseRepository.findById(courseId).get();
+        validator(instructor.getPhoneNumber().replace(" ", ""), instructor.getLastName()
+                .replace(" ", ""), instructor.getFirstName()
+                .replace(" ", ""));
         //
         Long count = 0L;
         for (Group group : course.getGroups()) {
@@ -56,8 +60,11 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public InstructorResponse updateInstructor(Long instructorId, InstructorRequest instructorRequest) {
+    public InstructorResponse updateInstructor(Long instructorId, InstructorRequest instructorRequest) throws IOException {
         Instructor instructor = instructorRepository.findById(instructorId).get();
+        validator(instructor.getPhoneNumber().replace(" ", ""), instructor.getLastName()
+                .replace(" ", ""), instructor.getFirstName()
+                .replace(" ", ""));
         instructorRequestConverter.update(instructor, instructorRequest);
         return instructorResponseConverter.viewInstructor(instructorRepository.save(instructor));
     }
@@ -103,4 +110,42 @@ public class InstructorServiceImpl implements InstructorService {
             System.out.println("instructor is null");
         }
     }
+
+    private void validator(String phoneNumber, String firstName, String lastName) throws IOException {
+        if (firstName.length() > 2 && lastName.length() > 2) {
+            for (Character i : firstName.toCharArray()) {
+                if (!Character.isAlphabetic(i)) {
+                    throw new IOException("В имени инструктора нельзя вставлять цифры");
+                }
+            }
+
+            for (Character i : lastName.toCharArray()) {
+                if (!Character.isAlphabetic(i)) {
+                    throw new IOException("В фамилию инструктора нельзя вставлять цифры");
+                }
+            }
+        } else {
+            throw new IOException("В имени или фамилии инструктора должно быть как минимум 3 буквы");
+        }
+
+        if (phoneNumber.length() == 13
+                && phoneNumber.charAt(0) == '+'
+                && phoneNumber.charAt(1) == '9'
+                && phoneNumber.charAt(2) == '9'
+                && phoneNumber.charAt(3) == '6') {
+            int counter = 0;
+
+            for (Character i : phoneNumber.toCharArray()) {
+                if (counter != 0) {
+                    if (!Character.isDigit(i)) {
+                        throw new IOException("Формат номера не правильный");
+                    }
+                }
+                counter++;
+            }
+        } else {
+            throw new IOException("Формат номера не правильный");
+        }
+    }
 }
+

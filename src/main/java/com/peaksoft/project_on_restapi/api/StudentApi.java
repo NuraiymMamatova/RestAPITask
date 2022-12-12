@@ -6,6 +6,7 @@ import com.peaksoft.project_on_restapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,7 @@ public class StudentApi {
     private final StudentService studentService;
 
     @PostMapping("/save/{groupId}")
-    public StudentResponse saveStudent(@PathVariable Long groupId, @RequestBody StudentRequest studentRequest) {
+    public StudentResponse saveStudent(@PathVariable Long groupId, @RequestBody StudentRequest studentRequest) throws IOException {
         return studentService.saveStudent(groupId, studentRequest);
     }
 
@@ -42,7 +43,7 @@ public class StudentApi {
 
     @PutMapping("/{studentId}")
     public StudentResponse updateStudent(@PathVariable Long studentId,
-                                         @RequestBody StudentRequest studentRequest) {
+                                         @RequestBody StudentRequest studentRequest) throws IOException {
         return studentService.updateStudent(studentId, studentRequest);
     }
 

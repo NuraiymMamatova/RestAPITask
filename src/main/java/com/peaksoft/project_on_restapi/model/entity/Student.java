@@ -2,6 +2,7 @@ package com.peaksoft.project_on_restapi.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.peaksoft.project_on_restapi.model.enums.StudyFormat;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class Student {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Email
     private String email;
 
     @Column(name = "study_format")

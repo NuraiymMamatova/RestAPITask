@@ -1,13 +1,12 @@
 package com.peaksoft.project_on_restapi.api;
 
-import com.peaksoft.project_on_restapi.converter.request.InstructorRequestConverter;
 import com.peaksoft.project_on_restapi.dto.request.InstructorRequest;
-import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
 import com.peaksoft.project_on_restapi.service.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,7 +17,7 @@ public class InstructorApi {
     private final InstructorService instructorService;
 
     @PostMapping("/save/{courseId}")
-    public InstructorResponse saveInstructor(@PathVariable Long courseId, @RequestBody InstructorRequest instructorRequest) {
+    public InstructorResponse saveInstructor(@PathVariable Long courseId, @RequestBody InstructorRequest instructorRequest) throws IOException {
         return instructorService.saveInstructor(courseId, instructorRequest);
     }
 
@@ -44,7 +43,7 @@ public class InstructorApi {
 
     @PutMapping("/{instructorId}")
     public InstructorResponse updateInstructor(@PathVariable Long instructorId,
-                                               @RequestBody InstructorRequest instructorRequest) {
+                                               @RequestBody InstructorRequest instructorRequest) throws IOException {
         return instructorService.updateInstructor(instructorId, instructorRequest);
         
     }
