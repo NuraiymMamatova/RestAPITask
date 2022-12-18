@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LessonService {
 
-   LessonResponse saveLesson(LessonRequest lessonRequest);
+   LessonResponse saveLesson(Long  courseId, LessonRequest lessonRequest);
 
    LessonResponse deleteLessonById(Long lessonId);
 
@@ -18,5 +18,5 @@ public interface LessonService {
 
    List<LessonResponse> viewAllLessons();
 
-    List<Lesson> getAllLessons(Long id);
+    List<LessonResponse> viewAllLessons(Long courseId);
 }

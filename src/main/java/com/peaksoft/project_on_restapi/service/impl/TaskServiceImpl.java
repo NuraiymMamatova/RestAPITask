@@ -4,8 +4,10 @@ import com.peaksoft.project_on_restapi.converter.request.TaskRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.TaskResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.TaskRequest;
 import com.peaksoft.project_on_restapi.dto.response.TaskResponse;
+import com.peaksoft.project_on_restapi.model.entity.Lesson;
 import com.peaksoft.project_on_restapi.model.entity.Student;
 import com.peaksoft.project_on_restapi.model.entity.Task;
+import com.peaksoft.project_on_restapi.repository.LessonRepository;
 import com.peaksoft.project_on_restapi.repository.TaskRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.TaskService;
@@ -21,13 +23,18 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
+    private final LessonRepository lessonRepository;
+
     private final TaskRequestConverter taskRequestConverter;
 
     private final TaskResponseConverter taskResponseConverter;
 
     @Override
-    public TaskResponse saveTask(TaskRequest taskRequest) {
+    public TaskResponse saveTask(Long lessonId, TaskRequest taskRequest) {
         Task task = taskRequestConverter.saveTask(taskRequest);
+        Lesson lesson = lessonRepository.findById(lessonId).get();
+        lesson.addTasks(task);
+        task.setLesson(lesson);
         taskRepository.save(task);
         return taskResponseConverter.viewTask(task);
     }
@@ -58,7 +65,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks(Long id) {
-        return null;
+    public List<TaskResponse> viewAllTasks(Long lessonId) {
+        return taskResponseConverter.viewAllTask(taskRepository.getAllTasksById(lessonId));
     }
+
 }

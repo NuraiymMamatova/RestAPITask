@@ -1,0 +1,19 @@
+#spring.datasource.url=
+#spring.datasource.password=
+#spring.datasource.username=
+#spring.jpa.hibernate.ddl-auto=
+#spring.jpa.show-sql=
+#
+#server.error.include-message=
+#server.port=
+
+spring:
+  datasource:
+    password: 1234
+    url: jdbc:postgresql://localhost:5432/project_on_restapi
+    username: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+#  port: 2323

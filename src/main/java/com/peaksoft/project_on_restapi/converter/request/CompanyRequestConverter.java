@@ -5,6 +5,8 @@ import com.peaksoft.project_on_restapi.model.entity.Company;
 import com.peaksoft.project_on_restapi.model.entity.Course;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CompanyRequestConverter {
 
@@ -15,7 +17,6 @@ public class CompanyRequestConverter {
         Company company = new Company();
         company.setCompanyName(companyRequest.getCompanyName());
         company.setLocatedCountry(companyRequest.getLocatedCountry());
-        company.setCourses(companyRequest.getCourses());
         return company;
     }
 
@@ -25,15 +26,6 @@ public class CompanyRequestConverter {
         }
         if (companyRequest.getLocatedCountry() != null) {
             company.setLocatedCountry(companyRequest.getLocatedCountry());
-        }
-        if (companyRequest.getCourses() != null) {
-            for (Course course1 : company.getCourses()) {
-                for (Course course2 : companyRequest.getCourses()) {
-                    course1.setCourseName(course2.getCourseName());
-                    course1.setDescription(course2.getDescription());
-                    course1.setDuration(course2.getDuration());
-                }
-            }
         }
 
     }

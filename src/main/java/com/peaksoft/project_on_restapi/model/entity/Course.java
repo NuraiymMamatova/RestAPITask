@@ -1,18 +1,17 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Table(name = "courses")
@@ -38,12 +37,15 @@ public class Course {
     private Company company;
 
     @OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "course")
+    @JsonManagedReference
     private List<Lesson> lessons;
 
     @ManyToMany(cascade = ALL, fetch = LAZY, mappedBy = "courses")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@UUID")
     private List<Group> groups;
 
     @OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "course")
+    @JsonManagedReference
     private List<Instructor> instructors;
 
     public Course(String courseName, int duration, String description) {

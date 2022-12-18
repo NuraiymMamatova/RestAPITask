@@ -1,13 +1,15 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.peaksoft.project_on_restapi.model.enums.StudyFormat;
+import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
-import static jakarta.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Table(name = "students")
@@ -30,14 +32,17 @@ public class Student {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Email
     private String email;
+
+    private String password;//+
 
     @Column(name = "study_format")
     @Enumerated(EnumType.STRING)
     private StudyFormat studyFormat;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Group group;
 
     public Student(String firstName, String lastName, String phoneNumber, String email, StudyFormat studyFormat) {

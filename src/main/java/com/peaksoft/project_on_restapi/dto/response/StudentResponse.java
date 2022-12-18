@@ -1,8 +1,8 @@
 package com.peaksoft.project_on_restapi.dto.response;
 
 import com.peaksoft.project_on_restapi.model.enums.StudyFormat;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

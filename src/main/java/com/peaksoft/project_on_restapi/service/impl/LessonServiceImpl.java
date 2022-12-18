@@ -4,7 +4,9 @@ import com.peaksoft.project_on_restapi.converter.request.LessonRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.LessonResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.LessonRequest;
 import com.peaksoft.project_on_restapi.dto.response.LessonResponse;
+import com.peaksoft.project_on_restapi.model.entity.Course;
 import com.peaksoft.project_on_restapi.model.entity.Lesson;
+import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.repository.LessonRepository;
 import com.peaksoft.project_on_restapi.service.LessonService;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +20,18 @@ public class LessonServiceImpl implements LessonService {
 
     private final LessonRepository lessonRepository;
 
+    private final CourseRepository courseRepository;
+
     private final LessonRequestConverter lessonRequestConverter;
 
     private final LessonResponseConverter lessonResponseConverter;
 
     @Override
-    public LessonResponse saveLesson(LessonRequest lessonRequest) {
+    public LessonResponse saveLesson(Long courseId, LessonRequest lessonRequest) {
         Lesson lesson = lessonRequestConverter.saveLesson(lessonRequest);
+        Course course = courseRepository.findById(courseId).get();
+        course.addLesson(lesson);
+        lesson.setCourse(course);
         lessonRepository.save(lesson);
         return lessonResponseConverter.viewLesson(lesson);
     }
@@ -55,7 +62,8 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> getAllLessons(Long id) {
-        return null;
+    public List<LessonResponse> viewAllLessons(Long courseId) {
+        return lessonResponseConverter.viewAllLesson(lessonRepository.getLessonsByCourseId(courseId));
     }
+
 }

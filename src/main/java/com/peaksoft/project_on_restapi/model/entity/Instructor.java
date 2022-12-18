@@ -1,13 +1,15 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
-import static jakarta.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Getter
@@ -30,8 +32,10 @@ public class Instructor {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Email
     private String email;
+
+    private String password;
 
     private String specialization;
 
@@ -39,6 +43,7 @@ public class Instructor {
     private Long count = 0L;
 
     @ManyToOne(cascade = {MERGE, REFRESH, DETACH, PERSIST}, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Course course;
 
     public Instructor(String firstName, String lastName, String phoneNumber, String email, String specialization) {

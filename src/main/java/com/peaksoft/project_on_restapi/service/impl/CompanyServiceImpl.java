@@ -4,11 +4,11 @@ import com.peaksoft.project_on_restapi.converter.request.CompanyRequestConverter
 import com.peaksoft.project_on_restapi.converter.response.CompanyResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
-import com.peaksoft.project_on_restapi.model.entity.Company;
-import com.peaksoft.project_on_restapi.model.entity.Course;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
+import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.CompanyRepository;
-import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.service.CompanyService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,31 +20,34 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
 
+    private final UserService userService;
+
     private final CompanyRequestConverter companyRequestConverter;
 
     private final CompanyResponseConverter companyResponseConverter;
 
-    private final CourseRepository courseRepository;
-
     @Override
     public CompanyResponse saveCompany(CompanyRequest companyRequest) {
         Company company = companyRequestConverter.saveCompany(companyRequest);
-        System.out.println("save 1 ");
-        for (Course course : company.getCourses()) {
-            System.out.println("save 2");
-            course.setCompany(company);
-            System.out.println("save 3");
-            courseRepository.save(course);
-            System.out.println("save 4");
-        }
         companyRepository.save(company);
-        System.out.println("save 5");
         return companyResponseConverter.viewCompany(company);
     }
 
     @Override
     public CompanyResponse deleteCompanyById(Long companyId) {
         Company company = companyRepository.findById(companyId).get();
+        for (Course course : company.getCourses()) {
+            for (Group group : course.getGroups()) {
+                for (Student student : group.getStudents()) {
+                    UserResponse user = userService.findUserByEmail(student.getEmail());
+                    userService.deleteUserById(Long.valueOf(user.getId()));
+                }
+            }
+            for (Instructor instructor : course.getInstructors()) {
+                UserResponse user = userService.findUserByEmail(instructor.getEmail());
+                userService.deleteUserById(Long.valueOf(user.getId()));
+            }
+        }
         companyRepository.delete(company);
         return companyResponseConverter.viewCompany(company);
     }

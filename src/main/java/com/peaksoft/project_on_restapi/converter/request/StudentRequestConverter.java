@@ -16,6 +16,7 @@ public class StudentRequestConverter {
         student.setLastName(studentRequest.getLastName());
         student.setPhoneNumber(studentRequest.getPhoneNumber());
         student.setEmail(studentRequest.getEmail());
+        student.setPassword(studentRequest.getPassword());
         student.setStudyFormat(studentRequest.getStudyFormat());
         return student;
     }
@@ -36,7 +37,6 @@ public class StudentRequestConverter {
         if (studentRequest.getStudyFormat() != null) {
             student.setStudyFormat(studentRequest.getStudyFormat());
         }
-
 
     }
 }

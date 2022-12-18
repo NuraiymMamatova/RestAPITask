@@ -16,6 +16,4 @@ public class CompanyRequest {
 
     private String locatedCountry;
 
-    private List<Course> courses;
-
 }

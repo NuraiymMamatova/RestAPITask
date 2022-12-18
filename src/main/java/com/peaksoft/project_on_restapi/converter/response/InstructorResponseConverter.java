@@ -21,6 +21,7 @@ public class InstructorResponseConverter {
         instructorResponse.setPhoneNumber(instructor.getPhoneNumber());
         instructorResponse.setEmail(instructor.getEmail());
         instructorResponse.setSpecialization(instructor.getSpecialization());
+        instructorResponse.setCount(instructor.getCount());
         return instructorResponse;
     }
 

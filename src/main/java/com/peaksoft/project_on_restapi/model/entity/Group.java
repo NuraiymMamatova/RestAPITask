@@ -1,6 +1,9 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +12,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Getter
@@ -35,9 +38,11 @@ public class Group {
     @JoinTable(name = "groups_courses",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@UUID")
     private List<Course> courses;
 
     @OneToMany(cascade = ALL, fetch = FetchType.LAZY, mappedBy = "group")
+    @JsonManagedReference
     private List<Student> students;
 
     public Group(String groupName, Date dateOfStart, String image) {
