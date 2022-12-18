@@ -4,6 +4,7 @@ import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.service.CompanyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,28 +17,34 @@ public class CompanyApi {
     private final CompanyService companyService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CompanyResponse saveCompany(@RequestBody CompanyRequest companyRequest) {
         return companyService.saveCompany(companyRequest);
     }
 
     @GetMapping("/all")
+    @PreAuthorize("isAuthenticated()")
     public List<CompanyResponse> findAllCompanies() {
         return companyService.viewAllCompanies();
     }
 
     @GetMapping("/{companyId}")
+    @PreAuthorize("isAuthenticated()")
     public CompanyResponse findById(@PathVariable Long companyId) {
         return companyService.findCompanyById(companyId);
     }
 
     @DeleteMapping("/{companyId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CompanyResponse deleteCompanyById(@PathVariable Long companyId) {
         return companyService.deleteCompanyById(companyId);
     }
 
     @PutMapping("/{companyId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CompanyResponse updateCompany(@PathVariable Long companyId,
                                          @RequestBody CompanyRequest companyRequest) {
         return companyService.updateCompany(companyId, companyRequest);
     }
+
 }

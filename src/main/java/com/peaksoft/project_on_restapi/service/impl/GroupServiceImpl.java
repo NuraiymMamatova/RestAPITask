@@ -5,6 +5,7 @@ import com.peaksoft.project_on_restapi.converter.response.GroupResponseConverter
 import com.peaksoft.project_on_restapi.dto.request.GroupRequest;
 import com.peaksoft.project_on_restapi.dto.response.CourseResponse;
 import com.peaksoft.project_on_restapi.dto.response.GroupResponse;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
 import com.peaksoft.project_on_restapi.model.entity.Course;
 import com.peaksoft.project_on_restapi.model.entity.Group;
 import com.peaksoft.project_on_restapi.model.entity.Instructor;
@@ -13,6 +14,7 @@ import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.repository.GroupRepository;
 import com.peaksoft.project_on_restapi.service.CourseService;
 import com.peaksoft.project_on_restapi.service.GroupService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,8 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
 
     private final CourseRepository courseRepository;
+
+    private final UserService userService;
 
     private final GroupRequestConverter groupRequestConverter;
 
@@ -56,6 +60,10 @@ public class GroupServiceImpl implements GroupService {
                 count2 -= count;
                 instructor.setCount(count2);
             }
+        }
+        for (Student student : group.getStudents()) {
+            UserResponse user = userService.findUserByEmail(student.getEmail());
+            userService.deleteUserById(Long.valueOf(user.getId()));
         }
         //
         groupRepository.delete(group);
@@ -95,8 +103,6 @@ public class GroupServiceImpl implements GroupService {
         }else {
             System.out.println("group id is null");
         }
-
-
 
     }
 

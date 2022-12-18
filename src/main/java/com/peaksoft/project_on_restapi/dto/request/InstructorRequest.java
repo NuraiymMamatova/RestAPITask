@@ -1,6 +1,6 @@
 package com.peaksoft.project_on_restapi.dto.request;
 
-import jakarta.validation.constraints.Email;
+import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +18,8 @@ public class InstructorRequest {
 
     @Email
     private String email;
+
+    private String password;
 
     private String specialization;
 }

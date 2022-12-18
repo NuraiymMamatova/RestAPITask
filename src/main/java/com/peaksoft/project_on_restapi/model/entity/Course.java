@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.*;
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Table(name = "courses")

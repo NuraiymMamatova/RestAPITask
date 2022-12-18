@@ -16,6 +16,7 @@ public class InstructorRequestConverter {
         instructor.setLastName(instructorRequest.getLastName());
         instructor.setPhoneNumber(instructorRequest.getPhoneNumber());
         instructor.setEmail(instructorRequest.getEmail());
+        instructor.setPassword(instructorRequest.getPassword());
         instructor.setSpecialization(instructorRequest.getSpecialization());
         return instructor;
     }
@@ -32,6 +33,9 @@ public class InstructorRequestConverter {
         }
         if (instructorRequest.getEmail() != null) {
             instructor.setEmail(instructorRequest.getEmail());
+        }
+        if (instructorRequest.getPassword() != null) {
+            instructor.setPassword(instructorRequest.getPassword());
         }
         if (instructorRequest.getSpecialization() != null) {
             instructor.setSpecialization(instructorRequest.getSpecialization());

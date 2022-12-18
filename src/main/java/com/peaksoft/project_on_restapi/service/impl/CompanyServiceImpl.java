@@ -4,9 +4,12 @@ import com.peaksoft.project_on_restapi.converter.request.CompanyRequestConverter
 import com.peaksoft.project_on_restapi.converter.response.CompanyResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
-import com.peaksoft.project_on_restapi.model.entity.Company;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
+import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.CompanyRepository;
 import com.peaksoft.project_on_restapi.service.CompanyService;
+import com.peaksoft.project_on_restapi.service.CourseService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,10 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
+
+    private final UserService userService;
+
+    private final CourseService courseService;
 
     private final CompanyRequestConverter companyRequestConverter;
 
@@ -32,6 +39,18 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyResponse deleteCompanyById(Long companyId) {
         Company company = companyRepository.findById(companyId).get();
+        for (Course course : company.getCourses()) {
+            for (Group group : course.getGroups()) {
+                for (Student student : group.getStudents()) {
+                    UserResponse user = userService.findUserByEmail(student.getEmail());
+                    userService.deleteUserById(Long.valueOf(user.getId()));
+                }
+            }
+            for (Instructor instructor : course.getInstructors()) {
+                UserResponse user = userService.findUserByEmail(instructor.getEmail());
+                userService.deleteUserById(Long.valueOf(user.getId()));
+            }
+        }
         companyRepository.delete(company);
         return companyResponseConverter.viewCompany(company);
     }

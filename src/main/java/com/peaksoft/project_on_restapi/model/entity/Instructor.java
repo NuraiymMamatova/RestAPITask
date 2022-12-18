@@ -1,15 +1,15 @@
 package com.peaksoft.project_on_restapi.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Email;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
-import static jakarta.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Getter
@@ -34,6 +34,8 @@ public class Instructor {
 
     @Email
     private String email;
+
+    private String password;
 
     private String specialization;
 

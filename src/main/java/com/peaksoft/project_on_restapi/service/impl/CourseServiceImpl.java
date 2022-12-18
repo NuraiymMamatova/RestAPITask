@@ -4,13 +4,12 @@ import com.peaksoft.project_on_restapi.converter.request.CourseRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.CourseResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CourseRequest;
 import com.peaksoft.project_on_restapi.dto.response.CourseResponse;
-import com.peaksoft.project_on_restapi.model.entity.Company;
-import com.peaksoft.project_on_restapi.model.entity.Course;
-import com.peaksoft.project_on_restapi.model.entity.Group;
-import com.peaksoft.project_on_restapi.model.entity.Student;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
+import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.CompanyRepository;
 import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.service.CourseService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,8 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
 
     private final CompanyRepository companyRepository;
+
+    private final UserService userService;
 
     private final CourseRequestConverter courseRequestConverter;
 
@@ -46,11 +47,17 @@ public class CourseServiceImpl implements CourseService {
         for (Group group : course.getGroups()) {
             for (Student student : group.getStudents()) {
                 count++;
+                UserResponse user = userService.findUserByEmail(student.getEmail());
+                userService.deleteUserById(Long.valueOf(user.getId()));
             }
         }
         Long count1 = course.getCompany().getCount();
         count1 -= count;
         course.getCompany().setCount(count1);
+        for (Instructor instructor : course.getInstructors()) {
+            UserResponse user = userService.findUserByEmail(instructor.getEmail());
+            userService.deleteUserById(Long.valueOf(user.getId()));
+        }
         //
         courseRepository.delete(course);
         return courseResponseConverter.viewCourse(course);

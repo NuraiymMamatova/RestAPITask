@@ -3,7 +3,9 @@ package com.peaksoft.project_on_restapi.service.impl;
 import com.peaksoft.project_on_restapi.converter.request.InstructorRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.InstructorResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.InstructorRequest;
+import com.peaksoft.project_on_restapi.dto.request.UserRequest;
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
 import com.peaksoft.project_on_restapi.model.entity.Course;
 import com.peaksoft.project_on_restapi.model.entity.Group;
 import com.peaksoft.project_on_restapi.model.entity.Instructor;
@@ -11,7 +13,9 @@ import com.peaksoft.project_on_restapi.model.entity.Student;
 import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.repository.InstructorRepository;
 import com.peaksoft.project_on_restapi.service.InstructorService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +29,10 @@ public class InstructorServiceImpl implements InstructorService {
 
     private final CourseRepository courseRepository;
 
+    private final UserService userService;
+
+    private final PasswordEncoder passwordEncoder;
+
     private final InstructorRequestConverter instructorRequestConverter;
 
     private final InstructorResponseConverter instructorResponseConverter;
@@ -37,24 +45,34 @@ public class InstructorServiceImpl implements InstructorService {
                 .replace(" ", ""), instructor.getFirstName()
                 .replace(" ", ""));
         //
-        Long count = 0L;
-        for (Group group : course.getGroups()) {
-            for (Student student : group.getStudents()) {
-                  count++;
+        if (instructorRepository.findByEmail(instructor.getEmail()) == null && userService.findUserByEmail(instructor.getEmail()) == null) {
+            Long count = 0L;
+            for (Group group : course.getGroups()) {
+                for (Student student : group.getStudents()) {
+                    count++;
 
+                }
             }
+            instructor.setCount(count);
+            //
+            UserResponse user = userService.saveUser(new UserRequest(instructor.getEmail(), instructor.getPassword()));
+            userService.addRoleToUser(user.getEmail(), "ROLE_STUDENT");
+            course.addInstructor(instructor);
+            instructor.setCourse(course);
+            String encodePassword = passwordEncoder.encode(instructor.getPassword());
+            instructor.setPassword(encodePassword);
+            instructorRepository.save(instructor);
+            return instructorResponseConverter.viewInstructor(instructor);
+        } else {
+            throw new IOException("Instructor with this email already exists!!!");
         }
-        instructor.setCount(count);
-        //
-        course.addInstructor(instructor);
-        instructor.setCourse(course);
-        instructorRepository.save(instructor);
-        return instructorResponseConverter.viewInstructor(instructor);
     }
 
     @Override
     public InstructorResponse deleteInstructorById(Long instructorId) {
         Instructor instructor = instructorRepository.findById(instructorId).get();
+        UserResponse user = userService.findUserByEmail(instructor .getEmail());
+        userService.deleteUserById(Long.valueOf(user.getId()));
         instructorRepository.delete(instructor);
         return instructorResponseConverter.viewInstructor(instructor);
     }
@@ -95,7 +113,7 @@ public class InstructorServiceImpl implements InstructorService {
                 Long count = 0L;
                 for (Group group : course.getGroups()) {
                     for (Student student : group.getStudents()) {
-                        count ++;
+                        count++;
                     }
                 }
                 instructor.setCount(count);
@@ -103,10 +121,10 @@ public class InstructorServiceImpl implements InstructorService {
                 instructor.setCourse(course);
                 course.addInstructor(instructor);
                 instructorRepository.save(instructor);
-            }else {
+            } else {
                 System.out.println("course is null");
             }
-        }else {
+        } else {
             System.out.println("instructor is null");
         }
     }

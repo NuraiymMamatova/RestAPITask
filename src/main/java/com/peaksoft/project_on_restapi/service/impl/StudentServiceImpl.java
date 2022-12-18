@@ -3,15 +3,16 @@ package com.peaksoft.project_on_restapi.service.impl;
 import com.peaksoft.project_on_restapi.converter.request.StudentRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.StudentResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.StudentRequest;
+import com.peaksoft.project_on_restapi.dto.request.UserRequest;
 import com.peaksoft.project_on_restapi.dto.response.StudentResponse;
-import com.peaksoft.project_on_restapi.model.entity.Course;
-import com.peaksoft.project_on_restapi.model.entity.Group;
-import com.peaksoft.project_on_restapi.model.entity.Instructor;
-import com.peaksoft.project_on_restapi.model.entity.Student;
+import com.peaksoft.project_on_restapi.dto.response.UserResponse;
+import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.GroupRepository;
 import com.peaksoft.project_on_restapi.repository.StudentRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
+import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +26,10 @@ public class StudentServiceImpl implements StudentService {
 
     private final GroupRepository groupRepository;
 
+    private final UserService userService;
+
+    private final PasswordEncoder passwordEncoder;
+
     private final StudentRequestConverter studentRequestConverter;
 
     private final StudentResponseConverter studentResponseConverter;
@@ -36,20 +41,29 @@ public class StudentServiceImpl implements StudentService {
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
-        //
-        for (Course course : group.getCourses()) {
-            course.getCompany().plus();
-        }
-        for (Course course : group.getCourses()) {
-            for (Instructor instructor : course.getInstructors()) {
-                instructor.plus();
+        if (userService.findUserByEmail(student.getEmail()) == null && studentRepository.findByEmail(student.getEmail()) == null) {
+            //
+            for (Course course : group.getCourses()) {
+                course.getCompany().plus();
             }
+            for (Course course : group.getCourses()) {
+                for (Instructor instructor : course.getInstructors()) {
+                    instructor.plus();
+                }
+            }
+            //
+            System.out.println("save user 1");
+            UserResponse user = userService.saveUser(new UserRequest(student.getEmail(), student.getPassword()));
+            userService.addRoleToUser(user.getEmail(), "ROLE_STUDENT");
+            group.addStudents(student);
+            student.setGroup(group);
+            String encodePassword = passwordEncoder.encode(student.getPassword());
+            student.setPassword(encodePassword);
+            studentRepository.save(student);
+            return studentResponseConverter.viewStudent(student);
+        } else {
+            throw new IOException("Student with this email already exists!!!");
         }
-        //
-        group.addStudents(student);
-        student.setGroup(group);
-        studentRepository.save(student);
-        return studentResponseConverter.viewStudent(student);
     }
 
     @Override
@@ -64,6 +78,8 @@ public class StudentServiceImpl implements StudentService {
                 instructor.minus();
             }
         }
+        UserResponse user = userService.findUserByEmail(student.getEmail());
+        userService.deleteUserById(Long.valueOf(user.getId()));
         // 
         studentRepository.delete(student);
         return studentResponseConverter.viewStudent(student);
