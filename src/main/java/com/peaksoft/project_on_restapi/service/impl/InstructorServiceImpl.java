@@ -83,8 +83,17 @@ public class InstructorServiceImpl implements InstructorService {
         validator(instructor.getPhoneNumber().replace(" ", ""), instructor.getLastName()
                 .replace(" ", ""), instructor.getFirstName()
                 .replace(" ", ""));
-        instructorRequestConverter.update(instructor, instructorRequest);
-        return instructorResponseConverter.viewInstructor(instructorRepository.save(instructor));
+        if (userService.findUserByEmail(instructor.getEmail()) != null || instructorRepository.findByEmail(instructor.getEmail()) != null) {
+            userService.updateUser(instructor.getEmail(), new UserRequest(instructorRequest.getEmail(), instructorRequest.getPassword()));
+
+            String encodePassword = passwordEncoder.encode(instructorRequest.getPassword());
+            instructor.setPassword(encodePassword);
+            instructorRequestConverter.update(instructor, instructorRequest);
+            return instructorResponseConverter.viewInstructor(instructorRepository.save(instructor));
+        }else {
+            throw new IOException("Instructor with this email not found !!!");
+        }
+
     }
 
     @Override

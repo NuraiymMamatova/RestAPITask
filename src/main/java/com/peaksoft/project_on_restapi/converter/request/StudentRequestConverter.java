@@ -38,6 +38,5 @@ public class StudentRequestConverter {
             student.setStudyFormat(studentRequest.getStudyFormat());
         }
 
-
     }
 }

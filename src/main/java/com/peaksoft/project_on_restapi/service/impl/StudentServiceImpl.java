@@ -9,6 +9,7 @@ import com.peaksoft.project_on_restapi.dto.response.UserResponse;
 import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.GroupRepository;
 import com.peaksoft.project_on_restapi.repository.StudentRepository;
+import com.peaksoft.project_on_restapi.repository.UserRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ public class StudentServiceImpl implements StudentService {
     private final GroupRepository groupRepository;
 
     private final UserService userService;
+
+    private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -91,8 +94,14 @@ public class StudentServiceImpl implements StudentService {
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
-        studentRequestConverter.update(student, studentRequest);
-        return studentResponseConverter.viewStudent(studentRepository.save(student));
+        if (userService.findUserByEmail(student.getEmail()) != null || studentRepository.findByEmail(student.getEmail()) != null) {
+            userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(), studentRequest.getPassword()));
+            studentRequestConverter.update(student, studentRequest);
+            return studentResponseConverter.viewStudent(studentRepository.save(student));
+        } else {
+            throw new IOException("Student with this email not found!!!");
+        }
+
     }
 
     @Override
