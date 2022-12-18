@@ -19,6 +19,6 @@ public interface GroupService {
 
     List<GroupResponse> viewAllGroups();
 
-    void assignGroupToCourse(Long groupId, Long courseId);
+    void assignGroupToCourse(Long groupId, Long courseId) throws IOException;
 
 }

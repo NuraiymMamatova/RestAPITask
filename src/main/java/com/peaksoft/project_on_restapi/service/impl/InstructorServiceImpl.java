@@ -113,23 +113,27 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public void assignInstructorToCourse(Long instructorId, Long courseId) {
+    public void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException{
         if (instructorId != null) {
             Instructor instructor = instructorRepository.findById(instructorId).get();
             if (courseId != null) {
                 Course course = courseRepository.findById(courseId).get();
                 //
-                Long count = 0L;
-                for (Group group : course.getGroups()) {
-                    for (Student student : group.getStudents()) {
-                        count++;
+                if (instructor.getCourse().getId() == courseId) {
+                    throw new IOException("Already exists !!! ");
+                }else {
+                    Long count = 0L;
+                    for (Group group : course.getGroups()) {
+                        for (Student student : group.getStudents()) {
+                            count++;
+                        }
                     }
+                    instructor.setCount(count);
+                    //
+                    instructor.setCourse(course);
+                    course.addInstructor(instructor);
+                    instructorRepository.save(instructor);
                 }
-                instructor.setCount(count);
-                //
-                instructor.setCourse(course);
-                course.addInstructor(instructor);
-                instructorRepository.save(instructor);
             } else {
                 System.out.println("course is null");
             }

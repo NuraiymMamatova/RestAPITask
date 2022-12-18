@@ -20,6 +20,6 @@ public interface InstructorService {
 
     List<InstructorResponse> viewAllInstructors(Long courseId);
 
-    void assignInstructorToCourse(Long instructorId, Long courseId);
+    void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException;
 
 }

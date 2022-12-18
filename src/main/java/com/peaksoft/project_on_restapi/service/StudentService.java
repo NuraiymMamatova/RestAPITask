@@ -20,6 +20,6 @@ public interface StudentService {
 
     List<StudentResponse> viewAllStudents(Long studentId);
 
-    void assignStudentToGroup(Long studentId, Long groupId);
+    void assignStudentToGroup(Long studentId, Long groupId) throws IOException;
 
 }

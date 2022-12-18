@@ -89,11 +89,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void assignGroupToCourse(Long groupId, Long courseId) {
+    public void assignGroupToCourse(Long groupId, Long courseId) throws IOException {
         if (groupId != null) {
             Group group = groupRepository.findById(groupId).get();
             if (courseId != null) {
                 Course course = courseRepository.findById(courseId).get();
+                for (Course course1 : group.getCourses()) {
+                    if (course1.getId() == courseId) {
+                        throw new IOException("Already exists !!!");
+                    }else {
+                        System.out.println("not equals");
+                    }
+                }
                 group.addCourse(course);
                 course.addGroup(group);
                 courseRepository.save(course);

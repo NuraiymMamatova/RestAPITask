@@ -38,14 +38,34 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyRepository.findById(companyId).get();
         for (Course course : company.getCourses()) {
             for (Group group : course.getGroups()) {
-                for (Student student : group.getStudents()) {
-                    UserResponse user = userService.findUserByEmail(student.getEmail());
-                    userService.deleteUserById(Long.valueOf(user.getId()));
+                if (group.getStudents() != null) {
+                    System.out.println("if group.getStudents != null 1");
+                    for (Student student : group.getStudents()) {
+                        System.out.println("if group.getStudents != null 2");
+                        if (student.getEmail() == null) {
+                            System.out.println("student is null");
+                        } else {
+                            UserResponse user = userService.findUserByEmail(student.getEmail());
+                            if (user == null) {
+                                System.out.println("user is null");
+                            }else {
+                                if (user.getId() != null) {
+                                    System.out.println("if user.getId != null 1");
+                                    userService.deleteUserById(Long.valueOf(user.getId()));
+                                    System.out.println("if user.getId != null 2");
+                                }
+                            }
+                        }
+                    }
                 }
             }
             for (Instructor instructor : course.getInstructors()) {
                 UserResponse user = userService.findUserByEmail(instructor.getEmail());
-                userService.deleteUserById(Long.valueOf(user.getId()));
+                if (user == null) {
+                    System.out.println("user is null");
+                }else {
+                    userService.deleteUserById(Long.valueOf(user.getId()));
+                }
             }
         }
         companyRepository.delete(company);

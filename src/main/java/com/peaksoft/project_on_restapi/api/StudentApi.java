@@ -56,7 +56,7 @@ public class StudentApi {
 
     @PostMapping("/{studentId}/assignStudentToGroup/{groupId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    public StudentResponse assignStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) {
+    public StudentResponse assignStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) throws IOException {
         studentService.assignStudentToGroup(studentId, groupId);
         return studentService.findStudentById(studentId);
     }

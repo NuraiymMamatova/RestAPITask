@@ -124,15 +124,19 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void assignStudentToGroup(Long studentId, Long groupId) {
+    public void assignStudentToGroup(Long studentId, Long groupId) throws IOException {
         if (studentId != null) {
             Student student = studentRepository.findById(studentId).get();
             if (groupId != null) {
                 Group group = groupRepository.findById(groupId).get();
-                student.setGroup(group);
-                group.addStudents(student);
-                groupRepository.save(group);
-                studentRepository.save(student);
+                if (student.getGroup().getId() == groupId) {
+                    throw new IOException("Already exists !!!");
+                }else {
+                    student.setGroup(group);
+                    group.addStudents(student);
+                    groupRepository.save(group);
+                    studentRepository.save(student);
+                }
             }
         }
     }

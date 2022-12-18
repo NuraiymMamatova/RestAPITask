@@ -2,7 +2,6 @@ package com.peaksoft.project_on_restapi.api;
 
 import com.peaksoft.project_on_restapi.dto.request.InstructorRequest;
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
-import com.peaksoft.project_on_restapi.repository.InstructorRepository;
 import com.peaksoft.project_on_restapi.service.InstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,7 +58,7 @@ public class InstructorApi {
     @PostMapping("/{instructorId}/assignInstructorToCourse/{courseId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public InstructorResponse assignInstructorToCourse(@PathVariable Long instructorId,
-                                                        @PathVariable Long courseId) {
+                                                        @PathVariable Long courseId) throws IOException {
         instructorService.assignInstructorToCourse(instructorId, courseId);
         return instructorService.findInstructorById(instructorId);
 
