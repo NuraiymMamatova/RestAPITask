@@ -8,7 +8,6 @@ import com.peaksoft.project_on_restapi.dto.response.UserResponse;
 import com.peaksoft.project_on_restapi.model.entity.*;
 import com.peaksoft.project_on_restapi.repository.CompanyRepository;
 import com.peaksoft.project_on_restapi.service.CompanyService;
-import com.peaksoft.project_on_restapi.service.CourseService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
 
     private final UserService userService;
-
-    private final CourseService courseService;
 
     private final CompanyRequestConverter companyRequestConverter;
 

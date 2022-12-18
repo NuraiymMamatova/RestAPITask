@@ -71,7 +71,7 @@ public class InstructorServiceImpl implements InstructorService {
     @Override
     public InstructorResponse deleteInstructorById(Long instructorId) {
         Instructor instructor = instructorRepository.findById(instructorId).get();
-        UserResponse user = userService.findUserByEmail(instructor .getEmail());
+        UserResponse user = userService.findUserByEmail(instructor.getEmail());
         userService.deleteUserById(Long.valueOf(user.getId()));
         instructorRepository.delete(instructor);
         return instructorResponseConverter.viewInstructor(instructor);
@@ -85,12 +85,12 @@ public class InstructorServiceImpl implements InstructorService {
                 .replace(" ", ""));
         if (userService.findUserByEmail(instructor.getEmail()) != null || instructorRepository.findByEmail(instructor.getEmail()) != null) {
             userService.updateUser(instructor.getEmail(), new UserRequest(instructorRequest.getEmail(), instructorRequest.getPassword()));
-
             String encodePassword = passwordEncoder.encode(instructorRequest.getPassword());
+            instructorRequest.setPassword(encodePassword);
             instructor.setPassword(encodePassword);
             instructorRequestConverter.update(instructor, instructorRequest);
             return instructorResponseConverter.viewInstructor(instructorRepository.save(instructor));
-        }else {
+        } else {
             throw new IOException("Instructor with this email not found !!!");
         }
 

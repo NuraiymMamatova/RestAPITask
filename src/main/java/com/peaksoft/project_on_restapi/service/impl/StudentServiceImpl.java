@@ -96,6 +96,9 @@ public class StudentServiceImpl implements StudentService {
                 .replace(" ", ""));
         if (userService.findUserByEmail(student.getEmail()) != null || studentRepository.findByEmail(student.getEmail()) != null) {
             userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(), studentRequest.getPassword()));
+            String encodePassword = passwordEncoder.encode(studentRequest.getPassword());
+            studentRequest.setPassword(encodePassword);
+            student.setPassword(encodePassword);
             studentRequestConverter.update(student, studentRequest);
             return studentResponseConverter.viewStudent(studentRepository.save(student));
         } else {
