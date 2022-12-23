@@ -15,8 +15,10 @@ import java.util.List;
 public interface InstructorRepository extends JpaRepository<Instructor, Long> {
     @Query("select i from Instructor i where i.email = :email")
     Instructor findByEmail(String email);
+
     @Query("select i from Instructor i where i.course.id = :courseId")
     List<Instructor> getAllInstructorByCourseId(Long courseId);
+
     @Query("select i from Instructor i where upper(i.firstName) like concat('%',:pagination, '%')" +
             " or upper(i.firstName) like concat('%',:pagination, '%' ) ")
     List<Instructor> searchPagination(@Param("pagination") String pagination, Pageable pageable);

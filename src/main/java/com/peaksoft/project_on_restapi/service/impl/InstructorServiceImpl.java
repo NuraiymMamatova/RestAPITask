@@ -15,7 +15,6 @@ import com.peaksoft.project_on_restapi.repository.InstructorRepository;
 import com.peaksoft.project_on_restapi.service.InstructorService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -139,7 +138,7 @@ public class InstructorServiceImpl implements InstructorService {
     }
 
     @Override
-    public void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException{
+    public void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException {
         if (instructorId != null) {
             Instructor instructor = instructorRepository.findById(instructorId).get();
             if (courseId != null) {
@@ -147,7 +146,7 @@ public class InstructorServiceImpl implements InstructorService {
                 //
                 if (instructor.getCourse().getId() == courseId) {
                     throw new IOException("Already exists !!! ");
-                }else {
+                } else {
                     Long count = 0L;
                     for (Group group : course.getGroups()) {
                         for (Student student : group.getStudents()) {
