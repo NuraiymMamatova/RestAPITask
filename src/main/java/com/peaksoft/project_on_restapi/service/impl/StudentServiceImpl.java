@@ -13,10 +13,13 @@ import com.peaksoft.project_on_restapi.repository.UserRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,13 +32,33 @@ public class StudentServiceImpl implements StudentService {
 
     private final UserService userService;
 
-    private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     private final StudentRequestConverter studentRequestConverter;
 
     private final StudentResponseConverter studentResponseConverter;
+
+    @Override
+    public StudentResponseConverter getAll(String email, int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        studentResponseConverter.setStudentResponseList(viewPagination(search(email, pageable)));
+        return studentResponseConverter;
+    }
+
+    @Override
+    public List<StudentResponse> viewPagination(List<Student> students) {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        for (Student student : students) {
+            studentResponseList.add(studentResponseConverter.viewStudent(student));
+        }
+        return studentResponseList;
+    }
+
+    @Override
+    public List<Student> search(String firstName, Pageable pageable) {
+        String email = firstName == null ? "" : firstName;
+        return studentRepository.searchPagination(email.toUpperCase(), pageable);
+    }
 
     @Override
     public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) throws IOException {

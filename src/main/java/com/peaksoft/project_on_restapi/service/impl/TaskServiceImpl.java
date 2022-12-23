@@ -12,9 +12,12 @@ import com.peaksoft.project_on_restapi.repository.TaskRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +31,28 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRequestConverter taskRequestConverter;
 
     private final TaskResponseConverter taskResponseConverter;
+
+    @Override
+    public TaskResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        taskResponseConverter.setTaskResponseList(viewPagination(search(name, pageable)));
+        return taskResponseConverter;
+    }
+
+    @Override
+    public List<TaskResponse> viewPagination(List<Task> tasks) {
+        List<TaskResponse> taskResponseList = new ArrayList<>();
+        for (Task task : tasks) {
+            taskResponseList.add(taskResponseConverter.viewTask(task));
+        }
+        return taskResponseList;
+    }
+
+    @Override
+    public List<Task> search(String name, Pageable pageable) {
+        String taskName = name == null ? "" : name;
+        return taskRepository.searchPagination(taskName.toUpperCase(), pageable);
+    }
 
     @Override
     public TaskResponse saveTask(Long lessonId, TaskRequest taskRequest) {

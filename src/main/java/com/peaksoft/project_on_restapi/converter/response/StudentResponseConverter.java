@@ -2,13 +2,19 @@ package com.peaksoft.project_on_restapi.converter.response;
 
 import com.peaksoft.project_on_restapi.dto.response.StudentResponse;
 import com.peaksoft.project_on_restapi.model.entity.Student;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class StudentResponseConverter {
+
+    private List<StudentResponse> studentResponseList;
 
     public StudentResponse viewStudent(Student student) {
         if (student == null) {
@@ -31,4 +37,5 @@ public class StudentResponseConverter {
         }
         return studentResponses;
     }
+
 }

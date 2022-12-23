@@ -4,7 +4,6 @@ import com.peaksoft.project_on_restapi.converter.request.UserRequestConverter;
 import com.peaksoft.project_on_restapi.converter.response.UserResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.UserRequest;
 import com.peaksoft.project_on_restapi.dto.response.UserResponse;
-import com.peaksoft.project_on_restapi.model.entity.Instructor;
 import com.peaksoft.project_on_restapi.model.entity.Role;
 import com.peaksoft.project_on_restapi.model.entity.User;
 import com.peaksoft.project_on_restapi.repository.RoleRepository;
@@ -37,7 +36,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @PostConstruct
     private void init() {
         if (userRepository.countOfUsers() != 0 && roleRepository.countOfRoles() != 0) {
-            System.out.println("Already exists" + userRepository.countOfUsers() + " " + roleRepository.countOfRoles());
+
         }else {
             roleRepository.save(new Role("ROLE_STUDENT"));//компанияны , курсту коро алат //task
             roleRepository.save(new Role("ROLE_INSTRUCTOR"));//компанияны, курсту, группаны student task lesson

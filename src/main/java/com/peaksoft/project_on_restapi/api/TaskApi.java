@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.TaskResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.TaskRequest;
 import com.peaksoft.project_on_restapi.dto.response.TaskResponse;
 import com.peaksoft.project_on_restapi.service.TaskService;
@@ -25,8 +26,10 @@ public class TaskApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<TaskResponse> findAllTasks() {
-        return taskService.viewAllTasks();
+    public TaskResponseConverter findAllTasks(@RequestParam(name = "name", required = false) String name,
+                                              @RequestParam int page,
+                                              @RequestParam int size) {
+        return taskService.getAll(name, page, size);
     }
 
     @GetMapping("/all/{lessonId}")

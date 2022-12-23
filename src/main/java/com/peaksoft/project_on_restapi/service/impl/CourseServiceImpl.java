@@ -11,8 +11,11 @@ import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.service.CourseService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +40,28 @@ public class CourseServiceImpl implements CourseService {
         company.addCourse(course);
         courseRepository.save(course);
         return courseResponseConverter.viewCourse(course);
+    }
+
+    @Override
+    public CourseResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        courseResponseConverter.setCourseResponseList(viewPagination(search(name, pageable)));
+        return courseResponseConverter;
+    }
+
+    @Override
+    public List<CourseResponse> viewPagination(List<Course> courses) {
+        List<CourseResponse> courseResponseList = new ArrayList<>();
+        for (Course course : courses) {
+            courseResponseList.add(courseResponseConverter.viewCourse(course));
+        }
+        return courseResponseList;
+    }
+
+    @Override
+    public List<Course> search(String name, Pageable pageable) {
+        String courseName = name == null ? "" : name;
+        return courseRepository.searchPagination(courseName.toUpperCase(), pageable);
     }
 
     @Override

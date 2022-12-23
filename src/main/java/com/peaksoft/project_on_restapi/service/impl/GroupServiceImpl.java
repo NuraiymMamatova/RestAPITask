@@ -16,10 +16,14 @@ import com.peaksoft.project_on_restapi.service.CourseService;
 import com.peaksoft.project_on_restapi.service.GroupService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,28 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRequestConverter groupRequestConverter;
 
     private final GroupResponseConverter groupResponseConverter;
+
+    @Override
+    public GroupResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        groupResponseConverter.setGroupResponseList(viewPagination(search(name, pageable)));
+        return groupResponseConverter;
+    }
+
+    @Override
+    public List<GroupResponse> viewPagination(List<Group> groups) {
+        List<GroupResponse> groupResponseList = new ArrayList<>();
+        for (Group group : groups) {
+            groupResponseList.add(groupResponseConverter.viewGroup(group));
+        }
+        return groupResponseList;
+    }
+
+    @Override
+    public List<Group> search(String name, Pageable pageable) {
+        String groupName = name == null ? "" : name;
+        return groupRepository.searchPagination(name.toUpperCase(), pageable);
+    }
 
     @Override
     public GroupResponse saveGroup(Long courseId, GroupRequest groupRequest) {

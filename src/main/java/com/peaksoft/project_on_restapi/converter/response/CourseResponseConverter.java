@@ -2,13 +2,19 @@ package com.peaksoft.project_on_restapi.converter.response;
 
 import com.peaksoft.project_on_restapi.dto.response.CourseResponse;
 import com.peaksoft.project_on_restapi.model.entity.Course;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class CourseResponseConverter {
+
+    private List<CourseResponse> courseResponseList;
 
     public CourseResponse viewCourse(Course course) {
         if (course == null) {

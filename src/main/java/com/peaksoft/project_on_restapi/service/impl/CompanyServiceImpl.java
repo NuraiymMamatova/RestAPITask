@@ -10,8 +10,11 @@ import com.peaksoft.project_on_restapi.repository.CompanyRepository;
 import com.peaksoft.project_on_restapi.service.CompanyService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,5 +91,27 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyResponse> viewAllCompanies() {
         return companyResponseConverter.viewAllCompany(companyRepository.findAll());
+    }
+
+    @Override
+    public CompanyResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        companyResponseConverter.setCompanyResponseList(viewPagination(search(name, pageable)));
+        return companyResponseConverter;
+    }
+
+    @Override
+    public List<CompanyResponse> viewPagination(List<Company> companies) {
+        List<CompanyResponse> companyResponseList = new ArrayList<>();
+        for (Company company : companies) {
+            companyResponseList.add(companyResponseConverter.viewCompany(company));
+        }
+        return companyResponseList;
+    }
+
+    @Override
+    public List<Company> search(String name, Pageable pageable) {
+        String companyName = name == null ? "" : name;
+        return companyRepository.searchPagination(companyName.toUpperCase(), pageable);
     }
 }

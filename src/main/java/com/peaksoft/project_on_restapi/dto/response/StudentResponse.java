@@ -26,4 +26,5 @@ public class StudentResponse {
 
     @Enumerated(EnumType.STRING)
     private StudyFormat studyFormat;
+
 }

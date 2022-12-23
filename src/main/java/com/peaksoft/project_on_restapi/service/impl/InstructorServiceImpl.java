@@ -15,10 +15,14 @@ import com.peaksoft.project_on_restapi.repository.InstructorRepository;
 import com.peaksoft.project_on_restapi.service.InstructorService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +40,28 @@ public class InstructorServiceImpl implements InstructorService {
     private final InstructorRequestConverter instructorRequestConverter;
 
     private final InstructorResponseConverter instructorResponseConverter;
+
+    @Override
+    public InstructorResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        instructorResponseConverter.setInstructorResponseList(viewPagination(search(name, pageable)));
+        return instructorResponseConverter;
+    }
+
+    @Override
+    public List<InstructorResponse> viewPagination(List<Instructor> instructors) {
+        List<InstructorResponse> instructorResponseList = new ArrayList<>();
+        for (Instructor instructor : instructors) {
+            instructorResponseList.add(instructorResponseConverter.viewInstructor(instructor));
+        }
+        return instructorResponseList;
+    }
+
+    @Override
+    public List<Instructor> search(String name, Pageable pageable) {
+        String firstName = name == null ? "" : name;
+        return instructorRepository.searchPagination(firstName.toUpperCase(), pageable);
+    }
 
     @Override
     public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) throws IOException {
@@ -56,7 +82,7 @@ public class InstructorServiceImpl implements InstructorService {
             instructor.setCount(count);
             //
             UserResponse user = userService.saveUser(new UserRequest(instructor.getEmail(), instructor.getPassword()));
-            userService.addRoleToUser(user.getEmail(), "ROLE_STUDENT");
+            userService.addRoleToUser(user.getEmail(), "ROLE_INSTRUCTOR");
             course.addInstructor(instructor);
             instructor.setCourse(course);
             String encodePassword = passwordEncoder.encode(instructor.getPassword());

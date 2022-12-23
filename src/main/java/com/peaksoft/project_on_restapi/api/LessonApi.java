@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.LessonResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.LessonRequest;
 import com.peaksoft.project_on_restapi.dto.response.LessonResponse;
 import com.peaksoft.project_on_restapi.service.LessonService;
@@ -24,8 +25,10 @@ public class LessonApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<LessonResponse> findAllLessons() {
-        return lessonService.viewAllLessons();
+    public LessonResponseConverter findAllLessons(@RequestParam(name = "name", required = false) String name,
+                                                  @RequestParam int page,
+                                                  @RequestParam int size) {
+        return lessonService.getAll(name, page, size);
     }
 
     @GetMapping("/all/{courseId}")

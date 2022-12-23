@@ -1,7 +1,10 @@
 package com.peaksoft.project_on_restapi.service;
 
+import com.peaksoft.project_on_restapi.converter.response.CompanyResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
+import com.peaksoft.project_on_restapi.model.entity.Company;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,5 +19,11 @@ public interface CompanyService {
     CompanyResponse findCompanyById(Long companyId);
 
     List<CompanyResponse> viewAllCompanies();
+
+    CompanyResponseConverter getAll(String name, int page, int size);
+
+    List<CompanyResponse> viewPagination(List<Company> companies);
+
+    List<Company> search(String name, Pageable pageable);
 
 }

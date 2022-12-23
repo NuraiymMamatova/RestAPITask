@@ -10,8 +10,12 @@ import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.repository.LessonRepository;
 import com.peaksoft.project_on_restapi.service.LessonService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Literal;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +29,28 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRequestConverter lessonRequestConverter;
 
     private final LessonResponseConverter lessonResponseConverter;
+
+    @Override
+    public LessonResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        lessonResponseConverter.setLessonResponseList(viewPagination(search(name, pageable)));
+        return lessonResponseConverter;
+    }
+
+    @Override
+    public List<LessonResponse> viewPagination(List<Lesson> lessons) {
+        List<LessonResponse> lessonResponseList = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            lessonResponseList.add(lessonResponseConverter.viewLesson(lesson));
+        }
+        return lessonResponseList;
+    }
+
+    @Override
+    public List<Lesson> search(String name, Pageable pageable) {
+        String lessonName = name == null ? "" : name;
+        return lessonRepository.searchPagination(lessonName.toUpperCase(), pageable);
+    }
 
     @Override
     public LessonResponse saveLesson(Long courseId, LessonRequest lessonRequest) {

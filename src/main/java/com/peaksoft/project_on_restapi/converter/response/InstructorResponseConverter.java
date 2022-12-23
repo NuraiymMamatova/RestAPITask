@@ -2,13 +2,19 @@ package com.peaksoft.project_on_restapi.converter.response;
 
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
 import com.peaksoft.project_on_restapi.model.entity.Instructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class InstructorResponseConverter {
+
+    private List<InstructorResponse> instructorResponseList;
 
     public InstructorResponse viewInstructor(Instructor instructor) {
         if (instructor == null) {

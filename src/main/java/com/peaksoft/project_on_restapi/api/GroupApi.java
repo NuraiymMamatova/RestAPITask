@@ -1,13 +1,12 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.GroupResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.GroupRequest;
 import com.peaksoft.project_on_restapi.dto.response.GroupResponse;
 import com.peaksoft.project_on_restapi.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +23,11 @@ public class GroupApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<GroupResponse> findAllGroups() {
-        return groupService.viewAllGroups();
+    public GroupResponseConverter findAllGroups(@RequestParam(name = "name", required = false) String name,
+                                                @RequestParam int page,
+                                                @RequestParam int size) {
+
+        return groupService.getAll(name, page, size);
     }
 
     @GetMapping("/{groupId}")

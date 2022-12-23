@@ -1,8 +1,10 @@
 package com.peaksoft.project_on_restapi.service;
 
+import com.peaksoft.project_on_restapi.converter.response.CourseResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CourseRequest;
 import com.peaksoft.project_on_restapi.dto.response.CourseResponse;
 import com.peaksoft.project_on_restapi.model.entity.Course;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,4 +21,10 @@ public interface CourseService {
     List<CourseResponse> viewAllCourses();
 
     List<CourseResponse> viewAllCourses(Long companyId);
+
+    CourseResponseConverter getAll(String name, int page, int size);
+
+    List<CourseResponse> viewPagination(List<Course> courses);
+
+    List<Course> search(String name, Pageable pageable);
 }

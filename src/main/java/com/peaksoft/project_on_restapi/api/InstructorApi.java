@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.InstructorResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.InstructorRequest;
 import com.peaksoft.project_on_restapi.dto.response.InstructorResponse;
 import com.peaksoft.project_on_restapi.service.InstructorService;
@@ -25,8 +26,10 @@ public class InstructorApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<InstructorResponse> findAllInstructors() {
-        return instructorService.viewAllInstructors();
+    public InstructorResponseConverter findAllInstructors(@RequestParam(name = "name", required = false) String name,
+                                                          @RequestParam int page,
+                                                          @RequestParam int size) {
+        return instructorService.getAll(name, page, size);
     }
 
     @GetMapping("/all/{courseId}")
