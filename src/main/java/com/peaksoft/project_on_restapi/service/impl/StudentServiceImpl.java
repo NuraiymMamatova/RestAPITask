@@ -15,8 +15,10 @@ import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) throws IOException {
         Student student = studentRequestConverter.saveStudent(studentRequest);
-        Group group = groupRepository.findById(groupId).get();
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found!"));
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
@@ -94,7 +96,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse deleteStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         //
         for (Course course : student.getGroup().getCourses()) {
             course.getCompany().minus();
@@ -113,7 +115,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse updateStudent(Long studentId, StudentRequest studentRequest) throws IOException {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
@@ -132,7 +134,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse findStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         return studentResponseConverter.viewStudent(student);
     }
 
@@ -143,15 +145,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentResponse> viewAllStudents(Long groupId) {
+        groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found!"));
         return studentResponseConverter.viewAllStudent(studentRepository.getAllStudentsByGroupId(groupId));
     }
 
     @Override
     public void assignStudentToGroup(Long studentId, Long groupId) throws IOException {
-        if (studentId != null) {
-            Student student = studentRepository.findById(studentId).get();
-            if (groupId != null) {
-                Group group = groupRepository.findById(groupId).get();
+            Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
+                Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
                 if (student.getGroup().getId() == groupId) {
                     throw new IOException("Already exists !!!");
                 }else {
@@ -160,8 +161,6 @@ public class StudentServiceImpl implements StudentService {
                     groupRepository.save(group);
                     studentRepository.save(student);
                 }
-            }
-        }
     }
 
     private void validator(String phoneNumber, String firstName, String lastName) throws IOException {

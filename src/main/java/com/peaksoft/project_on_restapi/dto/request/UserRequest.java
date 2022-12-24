@@ -1,11 +1,12 @@
 package com.peaksoft.project_on_restapi.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserRequest {
 
     private String email;

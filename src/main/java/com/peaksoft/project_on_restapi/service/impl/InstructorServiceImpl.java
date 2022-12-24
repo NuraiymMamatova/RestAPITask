@@ -17,8 +17,11 @@ import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +68,7 @@ public class InstructorServiceImpl implements InstructorService {
     @Override
     public InstructorResponse saveInstructor(Long courseId, InstructorRequest instructorRequest) throws IOException {
         Instructor instructor = instructorRequestConverter.saveInstructor(instructorRequest);
-        Course course = courseRepository.findById(courseId).get();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         validator(instructor.getPhoneNumber().replace(" ", ""), instructor.getLastName()
                 .replace(" ", ""), instructor.getFirstName()
                 .replace(" ", ""));
@@ -95,7 +98,7 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorResponse deleteInstructorById(Long instructorId) {
-        Instructor instructor = instructorRepository.findById(instructorId).get();
+        Instructor instructor = instructorRepository.findById(instructorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found!"));
         UserResponse user = userService.findUserByEmail(instructor.getEmail());
         userService.deleteUserById(Long.valueOf(user.getId()));
         instructorRepository.delete(instructor);
@@ -104,7 +107,7 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorResponse updateInstructor(Long instructorId, InstructorRequest instructorRequest) throws IOException {
-        Instructor instructor = instructorRepository.findById(instructorId).get();
+        Instructor instructor = instructorRepository.findById(instructorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found!"));
         validator(instructor.getPhoneNumber().replace(" ", ""), instructor.getLastName()
                 .replace(" ", ""), instructor.getFirstName()
                 .replace(" ", ""));
@@ -123,7 +126,7 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public InstructorResponse findInstructorById(Long instructorId) {
-        Instructor instructor = instructorRepository.findById(instructorId).get();
+        Instructor instructor = instructorRepository.findById(instructorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found!"));
         return instructorResponseConverter.viewInstructor(instructor);
     }
 
@@ -134,15 +137,14 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public List<InstructorResponse> viewAllInstructors(Long courseId) {
+        courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         return instructorResponseConverter.viewAllInstructor(instructorRepository.getAllInstructorByCourseId(courseId));
     }
 
     @Override
     public void assignInstructorToCourse(Long instructorId, Long courseId) throws IOException {
-        if (instructorId != null) {
-            Instructor instructor = instructorRepository.findById(instructorId).get();
-            if (courseId != null) {
-                Course course = courseRepository.findById(courseId).get();
+            Instructor instructor = instructorRepository.findById(instructorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instructor not found!"));
+                Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
                 //
                 if (instructor.getCourse().getId() == courseId) {
                     throw new IOException("Already exists !!! ");
@@ -159,12 +161,6 @@ public class InstructorServiceImpl implements InstructorService {
                     course.addInstructor(instructor);
                     instructorRepository.save(instructor);
                 }
-            } else {
-                System.out.println("course is null");
-            }
-        } else {
-            System.out.println("instructor is null");
-        }
     }
 
     private void validator(String phoneNumber, String firstName, String lastName) throws IOException {

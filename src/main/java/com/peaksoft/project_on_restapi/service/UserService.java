@@ -1,8 +1,6 @@
 package com.peaksoft.project_on_restapi.service;
 
-import com.peaksoft.project_on_restapi.dto.request.TaskRequest;
 import com.peaksoft.project_on_restapi.dto.request.UserRequest;
-import com.peaksoft.project_on_restapi.dto.response.TaskResponse;
 import com.peaksoft.project_on_restapi.dto.response.UserResponse;
 
 import java.util.List;

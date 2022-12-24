@@ -5,18 +5,17 @@ import com.peaksoft.project_on_restapi.converter.response.TaskResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.TaskRequest;
 import com.peaksoft.project_on_restapi.dto.response.TaskResponse;
 import com.peaksoft.project_on_restapi.model.entity.Lesson;
-import com.peaksoft.project_on_restapi.model.entity.Student;
 import com.peaksoft.project_on_restapi.model.entity.Task;
 import com.peaksoft.project_on_restapi.repository.LessonRepository;
 import com.peaksoft.project_on_restapi.repository.TaskRepository;
-import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse saveTask(Long lessonId, TaskRequest taskRequest) {
         Task task = taskRequestConverter.saveTask(taskRequest);
-        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lesson not found!"));
         lesson.addTasks(task);
         task.setLesson(lesson);
         taskRepository.save(task);
@@ -66,21 +65,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse deleteTaskById(Long taskId) {
-        Task task = taskRepository.findById(taskId).get();
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found!"));
         taskRepository.delete(task);
         return taskResponseConverter.viewTask(task);
     }
 
     @Override
     public TaskResponse updateTask(Long taskId, TaskRequest taskRequest) {
-        Task task = taskRepository.findById(taskId).get();
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found!"));
         taskRequestConverter.update(task, taskRequest);
         return taskResponseConverter.viewTask(taskRepository.save(task));
     }
 
     @Override
     public TaskResponse findTaskById(Long taskId) {
-        Task task = taskRepository.findById(taskId).get();
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found!"));
         return taskResponseConverter.viewTask(task);
     }
 
@@ -91,6 +90,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskResponse> viewAllTasks(Long lessonId) {
+        if (lessonId == null) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Lesson id cannot be null!");
+        }
         return taskResponseConverter.viewAllTask(taskRepository.getAllTasksById(lessonId));
     }
 

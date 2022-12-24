@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Literal;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonResponse saveLesson(Long courseId, LessonRequest lessonRequest) {
         Lesson lesson = lessonRequestConverter.saveLesson(lessonRequest);
-        Course course = courseRepository.findById(courseId).get();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         course.addLesson(lesson);
         lesson.setCourse(course);
         lessonRepository.save(lesson);
@@ -64,21 +66,21 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonResponse deleteLessonById(Long lessonId) {
-        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lesson not found!"));
         lessonRepository.delete(lesson);
         return lessonResponseConverter.viewLesson(lesson);
     }
 
     @Override
     public LessonResponse updateLesson(Long lessonId, LessonRequest lessonRequest) {
-        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lesson not found!"));
         lessonRequestConverter.update(lesson, lessonRequest);
         return lessonResponseConverter.viewLesson(lessonRepository.save(lesson));
     }
 
     @Override
     public LessonResponse findLessonById(Long lessonId) {
-        Lesson lesson = lessonRepository.findById(lessonId).get();
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lesson not found!"));
         return lessonResponseConverter.viewLesson(lesson);
     }
 

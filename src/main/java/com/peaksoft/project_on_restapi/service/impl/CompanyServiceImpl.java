@@ -12,7 +12,9 @@ import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyResponse deleteCompanyById(Long companyId) {
-        Company company = companyRepository.findById(companyId).get();
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found!"));
         for (Course course : company.getCourses()) {
             for (Group group : course.getGroups()) {
                 if (group.getStudents() != null) {
@@ -77,15 +79,14 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyResponse updateCompany(Long companyId, CompanyRequest companyRequest) {
-        Company company = companyRepository.findById(companyId).get();
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found!"));
         companyRequestConverter.update(company, companyRequest);
         return companyResponseConverter.viewCompany(companyRepository.save(company));
     }
 
     @Override
     public CompanyResponse findCompanyById(Long companyId) {
-        Company company = companyRepository.findById(companyId).get();
-        return companyResponseConverter.viewCompany(company);
+        return companyResponseConverter.viewCompany(companyRepository.findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found!")));
     }
 
     @Override
