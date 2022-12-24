@@ -80,7 +80,7 @@ public class InstructorServiceImpl implements InstructorService {
             }
             instructor.setCount(count);
             //
-            UserResponse user = userService.saveUser(new UserRequest(instructor.getEmail(), instructor.getPassword()));
+            UserResponse user = userService.saveUser(new UserRequest(instructor.getEmail(), instructor.getFirstName(), instructor.getPassword()));
             userService.addRoleToUser(user.getEmail(), "ROLE_INSTRUCTOR");
             course.addInstructor(instructor);
             instructor.setCourse(course);
@@ -109,7 +109,7 @@ public class InstructorServiceImpl implements InstructorService {
                 .replace(" ", ""), instructor.getFirstName()
                 .replace(" ", ""));
         if (userService.findUserByEmail(instructor.getEmail()) != null || instructorRepository.findByEmail(instructor.getEmail()) != null) {
-            userService.updateUser(instructor.getEmail(), new UserRequest(instructorRequest.getEmail(), instructorRequest.getPassword()));
+            userService.updateUser(instructor.getEmail(), new UserRequest(instructorRequest.getEmail(),instructorRequest.getFirstName(), instructorRequest.getPassword()));
             String encodePassword = passwordEncoder.encode(instructorRequest.getPassword());
             instructorRequest.setPassword(encodePassword);
             instructor.setPassword(encodePassword);

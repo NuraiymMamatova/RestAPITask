@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
             }
             //
             System.out.println("save user 1");
-            UserResponse user = userService.saveUser(new UserRequest(student.getEmail(), student.getPassword()));
+            UserResponse user = userService.saveUser(new UserRequest(student.getEmail(),student.getFirstName(), student.getPassword()));
             userService.addRoleToUser(user.getEmail(), "ROLE_STUDENT");
             group.addStudents(student);
             student.setGroup(group);
@@ -118,7 +118,7 @@ public class StudentServiceImpl implements StudentService {
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
         if (userService.findUserByEmail(student.getEmail()) != null || studentRepository.findByEmail(student.getEmail()) != null) {
-            userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(), studentRequest.getPassword()));
+            userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(),studentRequest.getFirstName(), studentRequest.getPassword()));
             String encodePassword = passwordEncoder.encode(studentRequest.getPassword());
             studentRequest.setPassword(encodePassword);
             student.setPassword(encodePassword);

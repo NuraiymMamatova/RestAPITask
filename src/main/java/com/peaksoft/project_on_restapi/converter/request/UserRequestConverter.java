@@ -13,6 +13,7 @@ public class UserRequestConverter {
         }
         User user = new User();
         user.setEmail(userRequest.getEmail());
+        user.setFirstName(userRequest.getFirstName());
         user.setPassword(userRequest.getPassword());
         return user;
     }
@@ -20,6 +21,9 @@ public class UserRequestConverter {
     public void update(User user, UserRequest userRequest) {
         if (userRequest.getPassword() != null) {
             user.setPassword(userRequest.getPassword());
+        }
+        if (userRequest.getFirstName() != null) {
+            user.setFirstName(userRequest.getFirstName());
         }
         if (userRequest.getEmail() != null) {
             user.setEmail(userRequest.getEmail());
