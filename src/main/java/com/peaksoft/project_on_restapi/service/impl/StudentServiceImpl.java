@@ -13,10 +13,15 @@ import com.peaksoft.project_on_restapi.repository.UserRepository;
 import com.peaksoft.project_on_restapi.service.StudentService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,8 +34,6 @@ public class StudentServiceImpl implements StudentService {
 
     private final UserService userService;
 
-    private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     private final StudentRequestConverter studentRequestConverter;
@@ -38,9 +41,31 @@ public class StudentServiceImpl implements StudentService {
     private final StudentResponseConverter studentResponseConverter;
 
     @Override
+    public StudentResponseConverter getAll(String email, int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        studentResponseConverter.setStudentResponseList(viewPagination(search(email, pageable)));
+        return studentResponseConverter;
+    }
+
+    @Override
+    public List<StudentResponse> viewPagination(List<Student> students) {
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        for (Student student : students) {
+            studentResponseList.add(studentResponseConverter.viewStudent(student));
+        }
+        return studentResponseList;
+    }
+
+    @Override
+    public List<Student> search(String firstName, Pageable pageable) {
+        String email = firstName == null ? "" : firstName;
+        return studentRepository.searchPagination(email.toUpperCase(), pageable);
+    }
+
+    @Override
     public StudentResponse saveStudent(Long groupId, StudentRequest studentRequest) throws IOException {
         Student student = studentRequestConverter.saveStudent(studentRequest);
-        Group group = groupRepository.findById(groupId).get();
+        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found!"));
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
@@ -56,7 +81,7 @@ public class StudentServiceImpl implements StudentService {
             }
             //
             System.out.println("save user 1");
-            UserResponse user = userService.saveUser(new UserRequest(student.getEmail(), student.getPassword()));
+            UserResponse user = userService.saveUser(new UserRequest(student.getEmail(),student.getFirstName(), student.getPassword()));
             userService.addRoleToUser(user.getEmail(), "ROLE_STUDENT");
             group.addStudents(student);
             student.setGroup(group);
@@ -71,7 +96,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse deleteStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         //
         for (Course course : student.getGroup().getCourses()) {
             course.getCompany().minus();
@@ -90,12 +115,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse updateStudent(Long studentId, StudentRequest studentRequest) throws IOException {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         validator(student.getPhoneNumber().replace(" ", ""), student.getLastName()
                 .replace(" ", ""), student.getFirstName()
                 .replace(" ", ""));
         if (userService.findUserByEmail(student.getEmail()) != null || studentRepository.findByEmail(student.getEmail()) != null) {
-            userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(), studentRequest.getPassword()));
+            userService.updateUser(student.getEmail(), new UserRequest(studentRequest.getEmail(),studentRequest.getFirstName(), studentRequest.getPassword()));
             String encodePassword = passwordEncoder.encode(studentRequest.getPassword());
             studentRequest.setPassword(encodePassword);
             student.setPassword(encodePassword);
@@ -109,7 +134,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse findStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
         return studentResponseConverter.viewStudent(student);
     }
 
@@ -120,21 +145,22 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentResponse> viewAllStudents(Long groupId) {
+        groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found!"));
         return studentResponseConverter.viewAllStudent(studentRepository.getAllStudentsByGroupId(groupId));
     }
 
     @Override
-    public void assignStudentToGroup(Long studentId, Long groupId) {
-        if (studentId != null) {
-            Student student = studentRepository.findById(studentId).get();
-            if (groupId != null) {
-                Group group = groupRepository.findById(groupId).get();
-                student.setGroup(group);
-                group.addStudents(student);
-                groupRepository.save(group);
-                studentRepository.save(student);
-            }
-        }
+    public void assignStudentToGroup(Long studentId, Long groupId) throws IOException {
+            Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found!"));
+                Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found"));
+                if (student.getGroup().getId() == groupId) {
+                    throw new IOException("Already exists !!!");
+                }else {
+                    student.setGroup(group);
+                    group.addStudents(student);
+                    groupRepository.save(group);
+                    studentRepository.save(student);
+                }
     }
 
     private void validator(String phoneNumber, String firstName, String lastName) throws IOException {

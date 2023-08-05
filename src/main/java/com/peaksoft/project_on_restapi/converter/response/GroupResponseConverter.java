@@ -2,13 +2,19 @@ package com.peaksoft.project_on_restapi.converter.response;
 
 import com.peaksoft.project_on_restapi.dto.response.GroupResponse;
 import com.peaksoft.project_on_restapi.model.entity.Group;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class GroupResponseConverter {
+
+    private List<GroupResponse> groupResponseList;
 
     public GroupResponse viewGroup(Group group) {
         if (group == null) {

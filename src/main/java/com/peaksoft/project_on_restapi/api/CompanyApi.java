@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.CompanyResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CompanyRequest;
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.service.CompanyService;
@@ -24,8 +25,10 @@ public class CompanyApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<CompanyResponse> findAllCompanies() {
-        return companyService.viewAllCompanies();
+    public CompanyResponseConverter findAllCompanies(@RequestParam(name = "name", required = false) String name,
+                                                     @RequestParam int page,
+                                                     @RequestParam int size) {
+        return companyService.getAll(name, page, size);
     }
 
     @GetMapping("/{companyId}")

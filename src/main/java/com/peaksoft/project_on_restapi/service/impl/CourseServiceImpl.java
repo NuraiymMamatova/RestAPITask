@@ -11,8 +11,13 @@ import com.peaksoft.project_on_restapi.repository.CourseRepository;
 import com.peaksoft.project_on_restapi.service.CourseService;
 import com.peaksoft.project_on_restapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseResponse saveCourse(Long companyId, CourseRequest courseRequest) {
         Course course = courseRequestConverter.saveCourse(courseRequest);
-        Company company = companyRepository.findById(companyId).get();
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found!"));
         course.setCompany(company);
         company.addCourse(course);
         courseRepository.save(course);
@@ -40,8 +45,30 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public CourseResponseConverter getAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        courseResponseConverter.setCourseResponseList(viewPagination(search(name, pageable)));
+        return courseResponseConverter;
+    }
+
+    @Override
+    public List<CourseResponse> viewPagination(List<Course> courses) {
+        List<CourseResponse> courseResponseList = new ArrayList<>();
+        for (Course course : courses) {
+            courseResponseList.add(courseResponseConverter.viewCourse(course));
+        }
+        return courseResponseList;
+    }
+
+    @Override
+    public List<Course> search(String name, Pageable pageable) {
+        String courseName = name == null ? "" : name;
+        return courseRepository.searchPagination(courseName.toUpperCase(), pageable);
+    }
+
+    @Override
     public CourseResponse deleteCourseById(Long courseId) {
-        Course course = courseRepository.findById(courseId).get();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         //
         Long count = 0L;
         for (Group group : course.getGroups()) {
@@ -65,14 +92,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseResponse updateCourse(Long courseId, CourseRequest courseRequest) {
-        Course course = courseRepository.findById(courseId).get();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         courseRequestConverter.update(course, courseRequest);
         return courseResponseConverter.viewCourse(courseRepository.save(course));
     }
 
     @Override
     public CourseResponse findCourseById(Long courseId) {
-        Course course = courseRepository.findById(courseId).get();
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found!"));
         return courseResponseConverter.viewCourse(course);
     }
 
@@ -83,6 +110,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseResponse> viewAllCourses(Long companyId) {
+        companyRepository.findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found!"));
         return courseResponseConverter.viewAllCourse(courseRepository.getAllCoursesByCompanyId(companyId));
     }
 }

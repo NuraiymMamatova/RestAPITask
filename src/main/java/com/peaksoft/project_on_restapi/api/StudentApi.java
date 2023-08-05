@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.StudentResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.StudentRequest;
 import com.peaksoft.project_on_restapi.dto.response.StudentResponse;
 import com.peaksoft.project_on_restapi.service.StudentService;
@@ -25,8 +26,8 @@ public class StudentApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<StudentResponse> findAllStudents() {
-        return studentService.viewAllStudents();
+    public StudentResponseConverter findAllStudents(@RequestParam(name = "email", required = false)String email, @RequestParam int page, @RequestParam int size) {
+        return studentService.getAll(email, page, size);
     }
 
     @GetMapping("/all/{groupId}")
@@ -56,7 +57,7 @@ public class StudentApi {
 
     @PostMapping("/{studentId}/assignStudentToGroup/{groupId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    public StudentResponse assignStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) {
+    public StudentResponse assignStudentToGroup(@PathVariable Long studentId, @PathVariable Long groupId) throws IOException {
         studentService.assignStudentToGroup(studentId, groupId);
         return studentService.findStudentById(studentId);
     }

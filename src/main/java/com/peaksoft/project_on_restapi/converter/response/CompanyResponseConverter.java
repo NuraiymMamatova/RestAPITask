@@ -2,13 +2,19 @@ package com.peaksoft.project_on_restapi.converter.response;
 
 import com.peaksoft.project_on_restapi.dto.response.CompanyResponse;
 import com.peaksoft.project_on_restapi.model.entity.Company;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class CompanyResponseConverter {
+
+    private List<CompanyResponse> companyResponseList;
 
     public CompanyResponse viewCompany(Company company) {
         if (company == null) {

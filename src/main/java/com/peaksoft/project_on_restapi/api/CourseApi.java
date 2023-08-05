@@ -1,5 +1,6 @@
 package com.peaksoft.project_on_restapi.api;
 
+import com.peaksoft.project_on_restapi.converter.response.CourseResponseConverter;
 import com.peaksoft.project_on_restapi.dto.request.CourseRequest;
 import com.peaksoft.project_on_restapi.dto.response.CourseResponse;
 import com.peaksoft.project_on_restapi.service.CourseService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,8 +29,8 @@ public class CourseApi {
 
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public List<CourseResponse> findALlCourses() {
-        return courseService.viewAllCourses();
+    public CourseResponseConverter findALlCourses(@RequestParam(name = "name", required = false)String name, @RequestParam int page, @RequestParam int size) {
+        return courseService.getAll(name, page, size);
     }
 
     @GetMapping("/all/{companyId}")
@@ -57,7 +59,7 @@ public class CourseApi {
 
     @PostMapping("/{groupId}/assignGroupToCourse/{courseId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public CourseResponse assignGroupToCourse(@PathVariable Long courseId, @PathVariable Long groupId) {
+    public CourseResponse assignGroupToCourse(@PathVariable Long courseId, @PathVariable Long groupId) throws IOException {
         groupService.assignGroupToCourse(groupId, courseId);
         return courseService.findCourseById(courseId);
     }
